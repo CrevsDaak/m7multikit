@@ -1,0 +1,350 @@
+/******************************************************************************
+ *                                                                            *
+ *                                                                            *
+ *	Basic TP2 Stuff                                                           *
+ *                                                                            *
+ *                                                                            *
+ ******************************************************************************/
+
+
+BACKUP ~m7multikit/backup~
+
+AUTHOR ~http://www.shsforums.net/topic/45258-multiclassed-multikit-builder-mod-experimental/~
+
+VERSION ~v0.25~
+
+ALWAYS
+	// Set this to the correct value for your mod.
+	OUTER_SPRINT "basepath"   ~./m7multikit~
+	OUTER_SET "defexplode" = 1
+	// In the form of a library for easy additions of multikits.
+	ACTION_INCLUDE ~%basepath%/lib/multikit.tpp~
+	LAUNCH_ACTION_FUNCTION ~m7#fix_old_tp2~ END
+END
+
+NO_IF_EVAL_BUG
+
+ASK_EVERY_COMPONENT
+
+LANGUAGE "English" "english" ~m7multikit/languages/english.tra~
+
+// Ancient components:
+BEGIN @1300000 DESIGNATED 0
+	DEPRECATED @1300031
+
+BEGIN @1300018 DESIGNATED 1
+	DEPRECATED @1300031
+
+
+/******************************************************************************
+ *                                                                            *
+ *                                                                            *
+ *	Core Component                                                            *
+ *                                                                            *
+ *                                                                            *
+ ******************************************************************************/
+
+BEGIN @1300032 DESIGNATED 10 REQUIRE_PREDICATE (MOD_IS_INSTALLED ~setup-bg2fixpack.tp2~ 0 || GAME_IS "iwdee bgee bg2ee eet") @1300036
+
+	ACTION_IF ENGINE_IS tob BEGIN
+		OUTER_TEXT_SPRINT TOBEX_MOD_DIRECTORY "%basepath%"
+		LOAD_TRA "%TOBEX_MOD_DIRECTORY%/TobEx_redist/TobEx.tra"
+		ACTION_INCLUDE "%TOBEX_MOD_DIRECTORY%/TobEx_redist/TobEx.tpa"
+	END
+
+	COPY ~%basepath%/multikit/m7tcwiz.spl~ ~override~
+		WRITE_ASCII 0x25e "m7tcwiz" #8
+
+	COPY ~%basepath%/multikit/m7wild.spl~ ~override~
+		WRITE_ASCII 0x13e "m7wild" #8
+
+	OUTER_SET "idx" = 1
+	ACTION_DEFINE_ARRAY "excl_flags" BEGIN END
+	
+	// Fill flag array and copy blank files.
+	OUTER_WHILE ("%idx%" < 9) BEGIN
+		OUTER_SET $excl_flags("%idx%") = (1 << ("%idx%" + 5))
+		// Create the blank spells.
+		COPY ~%basepath%/multikit/m7mkwsp.spl~ ~override/m7mkwsp%idx%.spl~
+		OUTER_SET "idx" += 1
+	END
+	
+	// Gather spells learnable through scrolls.
+	ACTION_DEFINE_ARRAY "ablist" BEGIN END
+	OUTER_SET "nelems" = 0
+	COPY_EXISTING_REGEXP GLOB ~^.+.itm$~ ~override~
+		PATCH_IF ("%SOURCE_SIZE%" >= 0x72) BEGIN	// Guard against 0-byte files.
+			PATCH_TRY
+				READ_SHORT 0x1c "type"
+				PATCH_IF ("%type%" == 11) BEGIN
+					// Scrolls. Get ability offsets.
+					GET_OFFSET_ARRAY "ab_array" ITM_V10_HEADERS
+					PHP_EACH "ab_array" AS "id" => "ab_off" BEGIN
+						CLEAR_ARRAY "fx_array"
+						// Get ability effects.
+						GET_OFFSET_ARRAY2 "fx_array" "%ab_off%" ITM_V10_HEAD_EFFECTS
+						PHP_EACH "fx_array" AS "id2" => "fx_off" BEGIN
+							// The opcode:
+							READ_SHORT "%fx_off%" "fx_type"
+							PATCH_IF ("%fx_type%" == 147) BEGIN
+								// Opcode is 'Learn spell'.
+								// Read spell resource.
+								READ_ASCII ("%fx_off%" + 0x14) "eff_res"
+								SET "dupe" = 0
+								// Is it already in the list?
+								PHP_EACH "ablist" AS "idx" => "elem" BEGIN
+									PATCH_IF ("%elem%" STRING_EQUAL_CASE "%eff_res%") BEGIN
+										// Yes, so set flag to prevent duplicate.
+										SET "dupe" = 1
+									END
+								END
+								PATCH_IF ("%dupe%" == 0) BEGIN
+									// Add to spell list.
+									SPRINT $ablist("%nelems%") "%eff_res%"
+									SET "nelems" += 1
+								END
+							END
+						END
+					END
+				END
+			WITH
+				DEFAULT
+					PATCH_PRINT @1300034
+			END
+		END
+		BUT_ONLY_IF_IT_CHANGES
+
+	// Go through spells learnable through scrolls.
+	ACTION_PHP_EACH "ablist" AS "idx" => "spell" BEGIN
+		COPY_EXISTING ~%spell%.spl~ ~override~
+			PATCH_IF ("%SOURCE_SIZE%" >= 0x72) BEGIN	// Guard against 0-byte files.
+				PATCH_TRY
+					READ_SHORT 0x1c "type"
+					// Sanity check: want only wizard spells.
+					PATCH_IF ("%type%" == 1) BEGIN
+						// Exclusion flags.
+						READ_SHORT 0x1e "excl"
+						// Save the resource name here.
+						SPRINT "splfile" "%SOURCE_RES%"
+						// Check each flag in the array we built earlier.
+						PHP_EACH "excl_flags" AS "id" => "flag" BEGIN
+							PATCH_IF (("%excl%" & "%flag%") != 0) BEGIN
+								// Can't use this spell; so we add a remove spell
+								// effect to the corresponding spell.
+								INNER_ACTION BEGIN
+									COPY_EXISTING ~m7mkwsp%id%.spl~ ~override~
+										// Add the 'remove spell' effect.
+										SET opcode = "172"
+										SET target = "1"
+										SET power = "0"
+										SET parameter1 = "0"
+										SET parameter2 = "0"
+										SET timing = "1"
+										SET resist_dispel = "0"
+										SET duration = "0"
+										SET probability1 = "100"
+										SET probability2 = "0"
+										SNPRINT 8 ~resource~ "%splfile%"
+										SET dicenumber = "0"
+										SET dicesize = "0"
+										SET savingthrow = "0"
+										SET savebonus = "0"
+										SET header = "0"
+										LAUNCH_PATCH_MACRO ~ADD_SPELL_EFFECT~
+								END
+							END
+						END
+					END
+				WITH
+					DEFAULT
+						PATCH_PRINT @1300035
+				END
+			END
+			BUT_ONLY_IF_IT_CHANGES
+	END
+
+
+/******************************************************************************
+ *                                                                            *
+ *                                                                            *
+ *	Multiclass Multikit Builder                                               *
+ *                                                                            *
+ *                                                                            *
+ ******************************************************************************/
+
+BEGIN @1300000 NO_LOG_RECORD DESIGNATED 11 REQUIRE_PREDICATE MOD_IS_INSTALLED ~m7multikit.tp2~ 10 @1300033
+	OUTER_SET "looping" = 1
+	OUTER_SET "numkits" = 0
+	PRINT @1300012
+	// Ask how many multikits are to be created:
+	OUTER_WHILE ("%looping%" == 1) BEGIN
+		// Prompt:
+		PRINT @1300016
+		ACTION_READLN "numkits"
+		// Input check:
+		ACTION_IF (NOT (IS_AN_INT "%numkits%")) BEGIN
+			// Not an integer.
+			PRINT @1300002
+		END ELSE BEGIN
+			// Finally! Store kit symbol and mixed name, break loop.
+			OUTER_SET "looping" = 0
+		END
+	END
+	
+	OUTER_SPRINT "numtogo" @1300013
+	OUTER_WHILE ("%numkits%" > 0) BEGIN
+		// The multikit creator function:
+		LAUNCH_ACTION_FUNCTION ~m7#build_multikit~
+			INT_VAR
+				"wanttitle" = 0
+				"explode_spells" = "%defexplode%"
+			STR_VAR
+				"modprefix" = ~m7~
+				"modpath" = EVALUATE_BUFFER ~%basepath%~ END
+		OUTER_SET "numkits" -= 1
+		// Status report:
+		ACTION_IF ("%numkits%" > 0) BEGIN
+			OUTER_PATCH_SAVE "prompt2" "%numtogo%" BEGIN
+				REPLACE_TEXTUALLY EXACT_MATCH "<NUM>" "%numkits%"
+			END
+			PRINT ~%prompt2%~
+		END ELSE BEGIN
+			PRINT @1300017
+		END
+	END
+
+
+/******************************************************************************
+ *                                                                            *
+ *                                                                            *
+ *	Multiclass Multikit Deleter                                               *
+ *                                                                            *
+ *                                                                            *
+ ******************************************************************************/
+
+BEGIN @1300026 NO_LOG_RECORD DESIGNATED 12 REQUIRE_PREDICATE MOD_IS_INSTALLED ~m7multikit.tp2~ 10 @1300033
+	OUTER_PATCH "dummy" BEGIN
+		// These hold name, starting position and ending position.
+		DEFINE_ARRAY "multikit_names" BEGIN END
+		DEFINE_ARRAY "multikit_locs"  BEGIN END
+		DEFINE_ARRAY "multikit_ends"  BEGIN END
+		DEFINE_ARRAY "multikit_desig" BEGIN END
+		SET "looping" = 1
+		// Flag for differential prompts.
+		SET "did_anything" = 0
+		WHILE ("%looping%" == 1) BEGIN
+			// Make sure clean.
+			CLEAR_ARRAY "multikit_names"
+			CLEAR_ARRAY "multikit_locs"
+			CLEAR_ARRAY "multikit_ends"
+			SET "count" = 0
+			// Woot, a rudimentary WeiDU parser!
+			// First, enumerate all created multikits.
+			INNER_PATCH_FILE ~%basepath%/multikits.tp2~ BEGIN
+				SET "pos" = 0
+				WHILE ("%pos%" < BUFFER_LENGTH) BEGIN
+					SET "line" = "%pos%"
+					// Read one line at a time.
+					LAUNCH_PATCH_FUNCTION ~m7#read_line~
+						INT_VAR
+							"offset" = EVALUATE_BUFFER "%line%"
+						RET
+							"pos" = "position"
+							"linestr" = "line_text" END
+					// Sanity check.
+					PATCH_IF ((STRING_LENGTH "%linestr%") == 0) BEGIN
+						// This should be picked up already; why isn't it?
+						SET "pos" = BUFFER_LENGTH
+					END ELSE PATCH_IF (("%linestr%" STRING_CONTAINS_REGEXP "^BEGIN[	 ]+~'[^']+'[	 ]+multikit~[	 ]+DESIGNATED[	 ]+[0-9]+") == 0) BEGIN
+						INNER_PATCH "%linestr%" BEGIN
+							// Find the component name in this mess.
+							LAUNCH_PATCH_FUNCTION ~m7#find_name~
+								INT_VAR
+									"offset" = 0
+								RET
+									"namestr" = "name" END
+							// Find the component designation.
+							LAUNCH_PATCH_FUNCTION ~m7#find_designation~
+								INT_VAR
+									"offset" = 0
+								RET
+									"desid" = "numid" END
+						END
+						// Store component name and starting position.
+						SPRINT $multikit_names("%count%") "%namestr%"
+						SET $multikit_locs("%count%") = "%line%"
+						SET $multikit_desig("%count%") = "%desid%"
+					END ELSE PATCH_IF (("%linestr%" STRING_MATCHES_REGEXP ~.+"kit2".+=.+".*".+END~) == 0) BEGIN
+						// We are at component end.
+						// Store ending position (includes the cr/lf).
+						SET $multikit_ends("%count%") = "%pos%"
+						SET "count" += 1
+					END
+				END
+			END
+			// Anything found?
+			PATCH_IF ("%count%" > 0) BEGIN
+				// Yes. Start bulding prompt.
+				SPRINT "prompt" @1300027
+				SET "idx" = 0
+				// Dump all components.
+				WHILE ("%idx%" < "%count%") BEGIN
+					SPRINT "line" $multikit_names("%idx%")
+					SPRINT "prompt" "%prompt%
+[%idx%] %line%"
+					SET "idx" += 1
+				END
+				SPRINT "promptstr" @1300028
+				SPRINT "prompt" "%prompt%
+
+%promptstr%"
+				PATCH_PRINT "%prompt%"
+				PATCH_READLN "val"
+				// Input check:
+				PATCH_IF (NOT (IS_AN_INT "%val%")) BEGIN
+					// Not an integer.
+					PATCH_PRINT @1300002
+				END ELSE PATCH_IF ("%val%" < 0) BEGIN
+					SET "looping" = 0
+				END ELSE PATCH_IF ("%val%" >= "%count%") BEGIN
+					// Integer not on the list...
+					PATCH_PRINT @1300003
+				END ELSE BEGIN
+					SET "start"  = $multikit_locs("%val%")
+					SET "finish" = $multikit_ends("%val%")
+					SET "desid"  = $multikit_desig("%val%")
+					INNER_ACTION BEGIN
+						UNINSTALL ~%basepath%/multikits.tp2~ EVALUATE_BUFFER "%desid%"
+						COPY ~%basepath%/multikits.tp2~ ~%basepath%/multikits.tp2~
+							DELETE_BYTES "%start%" ("%finish%" - "%start%")
+					END
+				END
+				SET "did_anything" = 1
+			END ELSE BEGIN
+				PATCH_IF ("%did_anything%" == 1) BEGIN
+					SPRINT "prompt" @1300030
+				END ELSE BEGIN
+					SPRINT "prompt" @1300029
+				END
+				PATCH_PRINT "%prompt%"
+				SET "looping" = 0
+			END
+		END
+	END
+
+
+/******************************************************************************
+ *                                                                            *
+ *                                                                            *
+ *	Multiclass Multikit Installer                                             *
+ *                                                                            *
+ *                                                                            *
+ ******************************************************************************/
+
+BEGIN @1300018 INSTALL_BY_DEFAULT NO_LOG_RECORD DESIGNATED 13 REQUIRE_PREDICATE MOD_IS_INSTALLED ~m7multikit.tp2~ 10 @1300033
+	// This auto-install, unlogged component does only one thing: it calls
+	// the multikit tp2 installer file to install multikits.
+	ACTION_IF (FILE_EXISTS ~%basepath%/multikits.tp2~) BEGIN
+		AT_EXIT ~%basepath%/multikits.tp2~
+	END
+
