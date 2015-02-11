@@ -2448,7 +2448,7 @@ THEN
 END
 
 IF
-	HotKey(L)
+	HotKey(N)
 	Kit(Myself,%kitid%)
 	ActionListEmpty()
 THEN
