@@ -135,7 +135,7 @@ BEGIN
        "%sneakatt%" STR_CMP "" OR
        "%crippstr%" STR_CMP "")
   BEGIN
-    WARN @1300037
+    PRINT @1300037
     OUTER_SPRINT backstab ""
     OUTER_SPRINT thiefskl ""
     OUTER_SPRINT traplimt ""
@@ -177,6 +177,7 @@ DEFINE_ACTION_FUNCTION fl#add_kit_ee
     fallen = 0
     briefdesc = "-2"
     fallen_notice = "-2"
+    7c#kit_class = 0
   STR_VAR
     kit_name = ""
     backstab = ""
@@ -207,7 +208,6 @@ BEGIN
           READ_2DA_ENTRY_FORMER kitlist i 2 kit_lower
           READ_2DA_ENTRY_FORMER kitlist i 3 kit_mixed
           READ_2DA_ENTRY_FORMER kitlist i 4 kit_desc
-          READ_2DA_ENTRY_FORMER kitlist i 8 kit_class
         END
       END
     BUT_ONLY
@@ -219,7 +219,7 @@ BEGIN
     LAF fl#add_kit_ee#validate
       INT_VAR
         kit_number
-        kit_class
+        kit_class = 7c#kit_class
       STR_VAR
         kit_name
         backstab
@@ -266,7 +266,7 @@ BEGIN
     BUT_ONLY
 
     OUTER_PATCH 0 BEGIN
-      LOOKUP_IDS_SYMBOL_OF_INT class class kit_class
+      LOOKUP_IDS_SYMBOL_OF_INT class class 7c#kit_class
     END
 
     ACTION_IF biography < "-1" OR briefdesc < "-1" OR fallen_notice < "-1" BEGIN
@@ -287,7 +287,7 @@ BEGIN
       BUT_ONLY
     END
 
-    OUTER_SPRINT clastext "%kit_name% %kit_class% %kit_number% %kit_lower% %kit_desc% %kit_mixed% %biography% %fallen% %briefdesc%"
+    OUTER_SPRINT clastext "%kit_name% %7c#kit_class% %kit_number% %kit_lower% %kit_desc% %kit_mixed% %biography% %fallen% %briefdesc%"
 
     ACTION_IF FILE_CONTAINS_EVALUATED (clastext.2da "FALLEN_NOTICE") BEGIN
       OUTER_SPRINT clastext "%clastext% %fallen_notice%"
