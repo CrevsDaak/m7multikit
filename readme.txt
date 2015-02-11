@@ -132,6 +132,13 @@ you're encouraged to try and report back any issue(s).
 
 		Section VI. Changelog
 		~~~~~~~~~~~~~~~~~~~~~
+Version 0.26:
+	* Fixed a bug that caused a warning and made it impossible to use
+	  Multikit-specific values for some .2da files on Enhanced Edition games.
+	* Fixed a bug that made impossible to disable the Multikit on Enhanced
+	  Edition games.
+	* Changed hotkey to remove Multikit to 'N' and documented that.
+
 Version 0.25:
 	* Added support for Enhanced Edition games.
 	* Fixed a bug that caused all Multikits to use the same specific.ids
