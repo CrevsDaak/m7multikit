@@ -71,7 +71,10 @@ the game. You can install or uninstall each multikit separately.
 As a rule, you do *not* need to start a new game to take advantage of anything
 you installed. You just need to select the generated AI script for the character
 you want, turn on party AI, apply the kit with 'K' and revert to whatever other
-script you fancy, and even disabling party AI if you want.
+script you fancy, and even disabling party AI if you want. To disable the kit,
+select the generated AI script for the character you want, turn on party AI and
+disable the kit with 'N'. You can revert to any other script you like, or turn the
+party AI off altogether.
 
 
 		Section IV. Technical
