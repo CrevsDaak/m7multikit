@@ -350,6 +350,7 @@ OUTER_SPRINT multikit_clswpbon "%__has_spec_apr% %__unarmed_divisor% %__unprof_p
 
 LAF fl#add_kit_ee
 	INT_VAR
+		7c#kit_class = "%kitclass%"
 		fallen = "%multikit_fallen%"
 		fallen_notice = "%multikit_fallen_notice%"
 	STR_VAR
