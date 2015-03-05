@@ -930,7 +930,7 @@ BEGIN
 					PATCH_IF ("%val%" == "%idsval%") BEGIN
 						// Kit symbol.
 						READ_2DA_ENTRY "%index%" 1 "%cols%" "name"
-						PATCH_IF // list taken from level1npcs, partially updated
+						PATCH_IF // list from level1npcs, partially updated
 							~%name%~ STR_CMP ~sswashtF~ &&
                     					~%name%~ STR_CMP ~sswashtw~ &&
 							~%name~ STR_CMP ~LATHANDER_X~ &&
