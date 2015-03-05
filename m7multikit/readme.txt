@@ -1,6 +1,6 @@
                              Baldur's Gate II
                         Multiclass Multikit Builder
-                               Version 0.26
+                               Version 0.27
 
 		Table of Contents
 		~~~~~~~~~~~~~~~~~
@@ -132,6 +132,11 @@ you're encouraged to try and report back any issue(s).
 
 		Section VI. Changelog
 		~~~~~~~~~~~~~~~~~~~~~
+
+Version 0.27:
+	* Avoid chunking on missing HLAs referenced in the lu*.2da table.
+	* Added base for avoiding normally unelectable Kits.
+
 Version 0.26:
 	* Fixed a bug that caused a warning and made it impossible to use
 	  Multikit-specific values for some .2da files on Enhanced Edition games.
