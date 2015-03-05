@@ -5,7 +5,7 @@
  * Date: 2014-09-28
  */
 
-// File edited by CrevsDaak on 2011-02-11 to add
+// File edited by CrevsDaak on 2015-02-11 to add
 // support for the Multikit mod.
 
 OUTER_SPRINT fl#add_kit_ee#version "1.0.5 Multikit %m7version%"

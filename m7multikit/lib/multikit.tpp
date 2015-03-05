@@ -930,15 +930,74 @@ BEGIN
 					PATCH_IF ("%val%" == "%idsval%") BEGIN
 						// Kit symbol.
 						READ_2DA_ENTRY "%index%" 1 "%cols%" "name"
-						SPRINT $kitlist("%kitcnt%") "%name%"
-						// Mixed name.
-						READ_2DA_ENTRY "%index%" 3 "%cols%" "val"
-						GET_STRREF "%val%" "name"
-						SPRINT $namelist("%kitcnt%") "%name%"
-						// The list of kits.
-						SPRINT "list" "%list%[%kitcnt%] %name%
+						PATCH_IF // list taken from level1npcs, partially updated
+							~%name%~ STR_CMP ~sswashtF~ &&
+                    					~%name%~ STR_CMP ~sswashtw~ &&
+							~%name~ STR_CMP ~LATHANDER_X~ &&
+                    					~%name%~ STR_CMP ~trueres~ &&
+							~%name%~ STR_CMP ~shadowdancertw~ &&
+							~%name%~ STR_CMP ~shadowdancertf~ &&
+                    					~%name%~ STR_CMP ~truequi~ &&
+                    					~%name%~ STR_CMP ~truequF~ &&
+                    					~%name%~ STR_CMP ~assatF~ &&
+                    					~%name%~ STR_CMP ~assatw~ &&
+                    					~%name%~ STR_CMP ~bountF~ &&
+                    					~%name%~ STR_CMP ~bountw~ &&
+                    					~%name%~ STR_CMP ~bersetF~ &&
+                    					~%name%~ STR_CMP ~bersetw~ &&
+                    					~%name%~ STR_CMP ~kensatF~ &&
+                    					~%name%~ STR_CMP ~kensatw~ &&
+                    					~%name%~ STR_CMP ~talostF~ &&
+                    					~%name%~ STR_CMP ~talostw~ &&
+                    					~%name%~ STR_CMP ~helmtF~ &&
+                    					~%name%~ STR_CMP ~helmtw~ &&
+                    					~%name%~ STR_CMP ~lathtF~ &&
+                    					~%name%~ STR_CMP ~lathtw~ &&
+                    					~%name%~ STR_CMP ~magetw~ &&
+                    					~%name%~ STR_CMP ~bladetw~ &&
+                    					~%name%~ STR_CMP ~shaptw~ &&
+                    					~%name%~ STR_CMP ~shaptF~ &&
+                    					~%name%~ STR_CMP ~WWANTItF~ &&
+                    					~%name%~ STR_CMP ~WWANTItw~ &&
+                    					~%name%~ STR_CMP ~WWARCHtF~ &&
+                    					~%name%~ STR_CMP ~WWARCHtw~ &&
+                    					~%name%~ STR_CMP ~PEERARCHtw~ &&
+                    					~%name%~ STR_CMP ~PEERARCHtf~ &&
+                    					~%name%~ STR_CMP ~A#SHARPSHOOTERtw~ &&
+                    					~%name%~ STR_CMP ~A#SHARPSHOOTERtF~ &&
+                    					~%name%~ STR_CMP ~C!Selunetw~ &&
+                    					~%name%~ STR_CMP ~C!SelunetF~ &&
+                    					~%name%~ STR_CMP ~A#SHARtw~ &&
+                    					~%name%~ STR_CMP ~A#SHARtF~ &&
+                    					~%name%~ STR_CMP ~A#TEMPtw~ &&
+                    					~%name%~ STR_CMP ~A#TEMPtF~ &&
+                    					~%name%~ STR_CMP ~barbtF~ &&
+                    					~%name%~ STR_CMP ~barbtwF~ &&
+							~%name%~ STR_CMP ~YRKENSAI~ &&
+							~%name~ STR_CMP ~m#ambkit~ &&
+							~%name%~ STR_CMP ~A!ADVENTURERtf~ &&
+							~%name%~ STR_CMP ~A!ADVENTURERtw~ &&
+							~%name%~ STR_CMP ~A!BURGLARtf~ &&
+							~%name%~ STR_CMP ~A!BURGLARtw~ &&
+							~%name%~ STR_CMP ~A!SOULKNIFEtf~ &&
+							~%name%~ STR_CMP ~A!SOULKNIFEtw~ &&
+							~%name%~ STR_CMP ~A!SHARPSHOOTERtf~ &&
+							~%name%~ STR_CMP ~A!SHARPSHOOTERtw~ &&
+							~%name%~ STR_CMP ~A#SHADOWDANCERtf~ &&
+							~%name%~ STR_CMP ~A#SHADOWDANCERtw~ &&
+							~%name%~ STR_CMP ~A!SHADOWDANCERtw~ &&
+							~%name%~ STR_CMP ~A!SHADOWDANCERtf~
+						BEGIN
+							SPRINT $kitlist("%kitcnt%") "%name%"
+							// Mixed name.
+							READ_2DA_ENTRY "%index%" 3 "%cols%" "val"
+							GET_STRREF "%val%" "name"
+							SPRINT $namelist("%kitcnt%") "%name%"
+							// The list of kits.
+							SPRINT "list" "%list%[%kitcnt%] %name%
 "
-						SET "kitcnt" += 1
+							SET "kitcnt" += 1
+						END
 					END
 				END
 			END
@@ -1094,10 +1153,14 @@ BEGIN
 									// Unique ability.
 									// Store filename.
 									SPRINT $abl_file("%abl_count%") "%ability%"
-									INNER_PATCH_FILE ~%ability%.spl~ BEGIN
-										// Store ability name.
-										READ_STRREF NAME1 $abl_name("%abl_count%")
-										READ_SHORT  0x1c  $abl_splt("%abl_count%")
+									ACTION_IF FILE_EXISTS_IN_GAME ~%ability%.spl~ BEGIN
+										INNER_PATCH_FILE ~%ability%.spl~ BEGIN
+											// Store ability name.
+											READ_STRREF NAME1 $abl_name("%abl_count%")
+											READ_SHORT  0x1c  $abl_splt("%abl_count%")
+										END
+									END ELSE BEGIN
+										PATCH_PRINT @1300044
 									END
 									// Store type: GA_ = 1, AP_ = 0.
 									SET $abl_type("%abl_count%") = ("%type%" STRING_EQUAL_CASE "GA_")
