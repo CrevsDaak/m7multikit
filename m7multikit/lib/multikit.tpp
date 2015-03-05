@@ -1153,7 +1153,7 @@ BEGIN
 									// Unique ability.
 									// Store filename.
 									SPRINT $abl_file("%abl_count%") "%ability%"
-									ACTION_IF FILE_EXISTS_IN_GAME ~%ability%.spl~ BEGIN
+									PATCH FILE_EXISTS_IN_GAME ~%ability%.spl~ BEGIN
 										INNER_PATCH_FILE ~%ability%.spl~ BEGIN
 											// Store ability name.
 											READ_STRREF NAME1 $abl_name("%abl_count%")
