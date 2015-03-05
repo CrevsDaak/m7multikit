@@ -1153,10 +1153,14 @@ BEGIN
 									// Unique ability.
 									// Store filename.
 									SPRINT $abl_file("%abl_count%") "%ability%"
-									INNER_PATCH_FILE ~%ability%.spl~ BEGIN
-										// Store ability name.
-										READ_STRREF NAME1 $abl_name("%abl_count%")
-										READ_SHORT  0x1c  $abl_splt("%abl_count%")
+									ACTION_IF FILE_EXISTS_IN_GAME ~%ability%.spl~ BEGIN
+										INNER_PATCH_FILE ~%ability%.spl~ BEGIN
+											// Store ability name.
+											READ_STRREF NAME1 $abl_name("%abl_count%")
+											READ_SHORT  0x1c  $abl_splt("%abl_count%")
+										END
+									END ELSE BEGIN
+										PATCH_PRINT @1300044
 									END
 									// Store type: GA_ = 1, AP_ = 0.
 									SET $abl_type("%abl_count%") = ("%type%" STRING_EQUAL_CASE "GA_")
