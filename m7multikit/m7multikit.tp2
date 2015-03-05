@@ -11,7 +11,7 @@ BACKUP ~m7multikit/backup~
 
 AUTHOR ~http://www.shsforums.net/topic/45258-multiclassed-multikit-builder-mod-experimental/~
 
-VERSION ~v0.27~
+VERSION ~v0.27.1~
 
 ALWAYS
 	// Set this to the correct value for your mod.
