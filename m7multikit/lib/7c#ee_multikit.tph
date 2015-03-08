@@ -141,8 +141,8 @@ END
 ACTION_IF FILE_CONTAINS_EVALUATED (backstab.2da "%kit1%") && $classes(1) STRING_EQUAL "RANGER" BEGIN
 	LAF 7c#get_row
 		STR_VAR
-			the_one_thief_kit = EVAL "%kit1%" // Stalker kit (unless somebody edited fl#add_kit_ee.tpa
-			file = backstab			  // for their needs), but process it as %var% anyway.
+			the_one_thief_kit = EVAL "%kit1%" // Stalker kit
+			file = backstab
 	END
 	ACTION_IF GAME_IS iwdee BEGIN
 		ACTION_FOR_EACH 7c_iwdee_table IN crippstr sneakatt BEGIN
@@ -174,110 +174,112 @@ COPY_EXISTING - clasthac.2da override
 	END
 BUT_ONLY
 
-COPY_EXISTING - clasiskl.2da override
-	COUNT_2DA_COLS __cols_daak
-	READ_2DA_ENTRIES_NOW __clasiskl_cd __cols_daak - 1
-	FOR (j__ = 0; j__ < __cols_daak - 1; ++j__) BEGIN
-		READ_2DA_ENTRY_FORMER __clasiskl_cd 0 j__ comp_kit_
-		PATCH_IF "%comp_kit_%" STRING_EQUAL_CASE "%kit0%" BEGIN
-			READ_2DA_ENTRY_FORMER __clasiskl_cd 1 j__ pick_pockets_0
-			READ_2DA_ENTRY_FORMER __clasiskl_cd 2 j__ open_locks_0
-			READ_2DA_ENTRY_FORMER __clasiskl_cd 3 j__ find_traps_0
-			READ_2DA_ENTRY_FORMER __clasiskl_cd 4 j__ move_silently_0
-			READ_2DA_ENTRY_FORMER __clasiskl_cd 5 j__ hide_in_shadows_0
-			READ_2DA_ENTRY_FORMER __clasiskl_cd 6 j__ detect_illusion_0
-			READ_2DA_ENTRY_FORMER __clasiskl_cd 7 j__ set_traps_0
-		END
-		PATCH_IF "%comp_kit_%" STRING_EQUAL_CASE "%kit1%" BEGIN
-			READ_2DA_ENTRY_FORMER __clasiskl_cd 1 j__ pick_pockets_1
-			READ_2DA_ENTRY_FORMER __clasiskl_cd 2 j__ open_locks_1
-			READ_2DA_ENTRY_FORMER __clasiskl_cd 3 j__ find_traps_1
-			READ_2DA_ENTRY_FORMER __clasiskl_cd 4 j__ move_silently_1
-			READ_2DA_ENTRY_FORMER __clasiskl_cd 5 j__ hide_in_shadows_1
-			READ_2DA_ENTRY_FORMER __clasiskl_cd 6 j__ detect_illusion_1
-			READ_2DA_ENTRY_FORMER __clasiskl_cd 7 j__ set_traps_1
-		END
-		PATCH_IF $classes(2) STRING_EQUAL "THIEF" || $classes(2) STRING_EQUAL "CLERIC" BEGIN
-			PATCH_IF "%comp_kit_%" STRING_EQUAL_CASE "%kit2%" BEGIN
-				READ_2DA_ENTRY_FORMER __clasiskl_cd 1 j__ pick_pockets_2
-				READ_2DA_ENTRY_FORMER __clasiskl_cd 2 j__ open_locks_2
-				READ_2DA_ENTRY_FORMER __clasiskl_cd 3 j__ find_traps_2
-				READ_2DA_ENTRY_FORMER __clasiskl_cd 4 j__ move_silently_2
-				READ_2DA_ENTRY_FORMER __clasiskl_cd 5 j__ hide_in_shadows_2
-				READ_2DA_ENTRY_FORMER __clasiskl_cd 6 j__ detect_illusion_2
-				READ_2DA_ENTRY_FORMER __clasiskl_cd 7 j__ set_traps_2
+ACTION_IF kitclassids = 13 || kitclassids = 15 || kitclassids = 10 || kitclassids = 18 || kitclassids != 9 BEGIN
+	COPY_EXISTING - clasiskl.2da override
+		COUNT_2DA_COLS __cols_daak
+		READ_2DA_ENTRIES_NOW __clasiskl_cd __cols_daak - 1
+		FOR (j__ = 0; j__ < __cols_daak - 1; ++j__) BEGIN
+			READ_2DA_ENTRY_FORMER __clasiskl_cd 0 j__ comp_kit_
+			PATCH_IF "%comp_kit_%" STRING_EQUAL_CASE "%kit0%" BEGIN
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 1 j__ pick_pockets_0
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 2 j__ open_locks_0
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 3 j__ find_traps_0
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 4 j__ move_silently_0
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 5 j__ hide_in_shadows_0
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 6 j__ detect_illusion_0
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 7 j__ set_traps_0
+			END
+			PATCH_IF "%comp_kit_%" STRING_EQUAL_CASE "%kit1%" BEGIN
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 1 j__ pick_pockets_1
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 2 j__ open_locks_1
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 3 j__ find_traps_1
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 4 j__ move_silently_1
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 5 j__ hide_in_shadows_1
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 6 j__ detect_illusion_1
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 7 j__ set_traps_1
+			END
+			PATCH_IF $classes(2) STRING_EQUAL "THIEF" || $classes(2) STRING_EQUAL "CLERIC" BEGIN
+				PATCH_IF "%comp_kit_%" STRING_EQUAL_CASE "%kit2%" BEGIN
+					READ_2DA_ENTRY_FORMER __clasiskl_cd 1 j__ pick_pockets_2
+					READ_2DA_ENTRY_FORMER __clasiskl_cd 2 j__ open_locks_2
+					READ_2DA_ENTRY_FORMER __clasiskl_cd 3 j__ find_traps_2
+					READ_2DA_ENTRY_FORMER __clasiskl_cd 4 j__ move_silently_2
+					READ_2DA_ENTRY_FORMER __clasiskl_cd 5 j__ hide_in_shadows_2
+					READ_2DA_ENTRY_FORMER __clasiskl_cd 6 j__ detect_illusion_2
+					READ_2DA_ENTRY_FORMER __clasiskl_cd 7 j__ set_traps_2
+				END
 			END
 		END
-	END
 
-ACTION_IF $classes(2) STRING_EQUAL "THIEF" || $classes(2) STRING_EQUAL "CLERIC" BEGIN
-	OUTER_PATCH thieving_skills BEGIN
-		LPF m7#max3
-			INT_VAR
-				n1 = pick_pockets_0
-				n2 = pick_pockets_1
-				n3 = pick_pockets_2
-			RET
-				pick_pockets = maxval
+	ACTION_IF $classes(2) STRING_EQUAL "THIEF" || $classes(2) STRING_EQUAL "CLERIC" BEGIN
+		OUTER_PATCH thieving_skills BEGIN
+			LPF m7#max3
+				INT_VAR
+					n1 = pick_pockets_0
+					n2 = pick_pockets_1
+					n3 = pick_pockets_2
+				RET
+					pick_pockets = maxval
+			END
+			LPF m7#max3
+				INT_VAR
+					n1 = open_locks_0
+					n2 = open_locks_1
+					n3 = open_locks_2
+				RET
+					open_locks = maxval
+			END
+			LPF m7#max3
+				INT_VAR
+					n1 = find_traps_0
+					n2 = find_traps_1
+					n3 = find_traps_2
+				RET
+					find_traps = maxval
+			END
+		
+			LPF m7#max3
+				INT_VAR
+					n1 = move_silently_0
+					n2 = move_silently_1
+					n3 = move_silently_2
+				RET
+					move_silently = maxval
+			END
+			LPF m7#max3
+				INT_VAR
+					n1 = hide_in_shadows_0
+					n2 = hide_in_shadows_1
+					n3 = hide_in_shadows_2
+				RET
+					hide_in_shadows = maxval
+			END
+			LPF m7#max3
+				INT_VAR
+					n1 = detect_illusion_0
+					n2 = detect_illusion_1
+					n3 = detect_illusion_2
+				RET
+					detect_illusion = maxval
+			END
+			LPF m7#max3
+				INT_VAR
+					n1 = set_traps_0
+					n2 = set_traps_1
+					n3 = set_traps_2
+				RET
+					set_traps = maxval
+			END
 		END
-		LPF m7#max3
-			INT_VAR
-				n1 = open_locks_0
-				n2 = open_locks_1
-				n3 = open_locks_2
-			RET
-				open_locks = maxval
-		END
-		LPF m7#max3
-			INT_VAR
-				n1 = find_traps_0
-				n2 = find_traps_1
-				n3 = find_traps_2
-			RET
-				find_traps = maxval
-		END
-	
-		LPF m7#max3
-			INT_VAR
-				n1 = move_silently_0
-				n2 = move_silently_1
-				n3 = move_silently_2
-			RET
-				move_silently = maxval
-		END
-		LPF m7#max3
-			INT_VAR
-				n1 = hide_in_shadows_0
-				n2 = hide_in_shadows_1
-				n3 = hide_in_shadows_2
-			RET
-				hide_in_shadows = maxval
-		END
-		LPF m7#max3
-			INT_VAR
-				n1 = detect_illusion_0
-				n2 = detect_illusion_1
-				n3 = detect_illusion_2
-			RET
-				detect_illusion = maxval
-		END
-		LPF m7#max3
-			INT_VAR
-				n1 = set_traps_0
-				n2 = set_traps_1
-				n3 = set_traps_2
-			RET
-				set_traps = maxval
-		END
+	END ELSE BEGIN
+		OUTER_SET pick_pockets = pick_pockets_0 > pick_pockets_1 ? pick_pockets_0 : pick_pockets_1
+		OUTER_SET open_locks = open_locks_0 > open_locks_1 ? open_locks_0 : open_locks_1
+		OUTER_SET find_traps = find_traps_0 > find_traps_1 ? find_traps_0 : find_traps_1
+		OUTER_SET move_silently = move_silently_0 > move_silently_1 ? move_silently_0 : move_silently_1
+		OUTER_SET hide_in_shadows = hide_in_shadows_0 > hide_in_shadows_1 ? hide_in_shadows_0 : hide_in_shadows_1
+		OUTER_SET detect_illusion = detect_illusion_0 > detect_illusion_1 ? detect_illusion_0 : detect_illusion_1
+		OUTER_SET set_traps = set_traps_0 > set_traps_1 ? set_traps_0 : set_traps_1
 	END
-END ELSE BEGIN
-	OUTER_SET pick_pockets = pick_pockets_0 > pick_pockets_1 ? pick_pockets_0 : pick_pockets_1
-	OUTER_SET open_locks = open_locks_0 > open_locks_1 ? open_locks_0 : open_locks_1
-	OUTER_SET find_traps = find_traps_0 > find_traps_1 ? find_traps_0 : find_traps_1
-	OUTER_SET move_silently = move_silently_0 > move_silently_1 ? move_silently_0 : move_silently_1
-	OUTER_SET hide_in_shadows = hide_in_shadows_0 > hide_in_shadows_1 ? hide_in_shadows_0 : hide_in_shadows_1
-	OUTER_SET detect_illusion = detect_illusion_0 > detect_illusion_1 ? detect_illusion_0 : detect_illusion_1
-	OUTER_SET set_traps = set_traps_0 > set_traps_1 ? set_traps_0 : set_traps_1
 END
 
 OUTER_SPRINT multikit_clasiskl ~%pick_pockets% %open_locks% %find_traps% %move_silently% %hide_in_shadows% %detect_illusion% %set_traps%~
@@ -313,6 +315,7 @@ COPY_EXISTING - clswpbon.2da override
 			END		
 		END
 	END
+
 ACTION_IF $classes(2) STRING_EQUAL "THIEF" || $classes(2) STRING_EQUAL "CLERIC" BEGIN
 	OUTER_PATCH clswpbon_ur_mom BEGIN
 		LPF m7#min3
