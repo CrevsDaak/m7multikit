@@ -1,6 +1,6 @@
                              Baldur's Gate II
                         Multiclass Multikit Builder
-                              Version 0.27.1
+                              Version 0.27.2
 
 		Table of Contents
 		~~~~~~~~~~~~~~~~~
@@ -132,6 +132,10 @@ you're encouraged to try and report back any issue(s).
 
 		Section VI. Changelog
 		~~~~~~~~~~~~~~~~~~~~~
+
+Version 0.27.2:
+	* No longer fails to install on Enhanced Editions games if a non-Thief
+          Multi-class combination is chosen.
 
 Version 0.27.1:
 	* No longer fails to install (an ACTION_IF was being used inside a
