@@ -11,11 +11,11 @@
  ******************************************************************************/
 BACKUP ~m7multikit/backup-kits~
 AUTHOR ~http://www.shsforums.net/topic/45258-multiclassed-multikit-builder-mod-experimental/~
-VERSION ~v0.27.1~
+VERSION ~v0.27.2~
 ALWAYS
 	// In the form of a library for easy additions of multikits.
 	INCLUDE ~m7multikit/lib/multikit.tpp~
-	OUTER_SPRINT m7version v0.26
+	OUTER_SPRINT m7version v0.27.2
 END
 NO_IF_EVAL_BUG
 LANGUAGE "English" "english" ~m7multikit/languages/english.tra~
