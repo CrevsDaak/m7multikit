@@ -1,3 +1,28 @@
+/*
+ * Copyright (C) 2010-2011 FlameWing
+ * Copyright (C) 2015 CrevsDaak
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ */
+
+
 /******************************************************************************
  *                                                                            *
  *                                                                            *
@@ -11,12 +36,12 @@ BACKUP ~m7multikit/backup~
 
 AUTHOR ~http://www.shsforums.net/topic/45258-multiclassed-multikit-builder-mod-experimental/~
 
-VERSION ~v0.27.2~
+VERSION ~v0.27.3~
 
 ALWAYS
 	// Set this to the correct value for your mod.
 	OUTER_SPRINT "basepath"   ~./m7multikit~
-	OUTER_SPRINT m7version v0.27.2
+	OUTER_SPRINT m7version v0.27.3
 	OUTER_SET "defexplode" = 1
 	// In the form of a library for easy additions of multikits.
 	ACTION_INCLUDE ~%basepath%/lib/multikit.tpp~
@@ -51,6 +76,13 @@ BEGIN @1300032 DESIGNATED 10 REQUIRE_PREDICATE (MOD_IS_INSTALLED ~setup-bg2fixpa
 		OUTER_TEXT_SPRINT TOBEX_MOD_DIRECTORY "%basepath%"
 		LOAD_TRA "%TOBEX_MOD_DIRECTORY%/TobEx_redist/TobEx.tra"
 		ACTION_INCLUDE "%TOBEX_MOD_DIRECTORY%/TobEx_redist/TobEx.tpa"
+		
+		ACTION_IF "%WEIDU_OS%" STRING_EQUAL_CASE "osx" BEGIN
+			  COPY "TobEx_ini/TobExCore.ini" "TobEx_ini/TobExCore.ini"
+				REPLACE_TEXTUALLY ~Casting Fixes=1~ ~Casting Fixes=0~
+			  BUT_ONLY
+			  PRINT ~Disabled TobEx's Casting Fixes, as it causes crashes on Wine'd installs on Mac OS X~
+		END
 	END
 
 	COPY ~%basepath%/multikit/m7tcwiz.spl~ ~override~

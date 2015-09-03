@@ -1,6 +1,6 @@
                              Baldur's Gate II
                         Multiclass Multikit Builder
-                              Version 0.27.2
+                              Version 0.27.3
 
 		Table of Contents
 		~~~~~~~~~~~~~~~~~
@@ -19,9 +19,9 @@ Transmuter/Bounty-Hunter? Berserker/Priest of Talos? Or maybe even a Barbarian/
 Wildmage/Adventurer?
 
 Well, now you can. This mod creates a multikit from the kits you select during
-installation (or by editing the tp2 file). You must them apply the kit with the
-auto-generated script. There are some limitations, yes -- see the bugs section
--- but everything I tried works.
+installation (or by editing the tp2 file, but that isn't normally recommended).
+You must them apply the kit with the auto-generated script. There are some limitations,
+yes --see the bugs section-- but everything I tried works.
 
 You gain abilities of a class when you gain levels in that class, kit item
 restrictions are obbeyed and the mod even attempts to combine kit limitations
@@ -37,6 +37,8 @@ This mod should be installed after any mods that add new kits or that change kit
 abilities. By doing this, you ensure that all kits you have installed can be
 used to make multikits, as well as ensuring that their abilities match.
 
+*Currently*, this mod is incompatible with Refinements.
+
 
 		Section III. Installation
 		~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,7 +49,7 @@ so you should be safe in most scenarios.
 Unzip the main ZIP file into your BGII main directory. This is normally:
         C:\Program Files\Black Isle\BGII - SoA\
 
-Run (click on) "setup-m7_tweaks.exe". 
+Run (click on) "setup-m7multikit.exe". 
 
 First, pick your favorite language. Currently available: 
   English 
@@ -132,6 +134,12 @@ you're encouraged to try and report back any issue(s).
 
 		Section VI. Changelog
 		~~~~~~~~~~~~~~~~~~~~~
+
+Version 0.27.3:
+       * Licensed under the MIT License as per FlameWing's wishes
+         (which I consider to be a really good idea actually).
+       * Updated TobEx to 0026 Beta, and added a small fix so it doesn't
+         crash on Wine'd BG2:ToB installs in OS X.
 
 Version 0.27.2:
 	* No longer fails to install on Enhanced Editions games if a non-Thief
