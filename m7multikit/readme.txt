@@ -1,6 +1,6 @@
                              Baldur's Gate II
                         Multiclass Multikit Builder
-                              Version 0.27.3
+                              Version 0.27.4
 
 		Table of Contents
 		~~~~~~~~~~~~~~~~~
@@ -132,8 +132,22 @@ always be the ones of the base Multi-class due to an engine limitation.
 Compatibility with GemRB is not yet implemented and completely untested. However,
 you're encouraged to try and report back any issue(s).
 
+Multiclass kit titles are not working correctly in the EE games, not
+even with the Set Title opcode. Last time I tried this it was in v1.3 so it
+might have changed, but Beamdog didn't drop a single line about this
+in the patch notes.
+
 		Section VI. Changelog
 		~~~~~~~~~~~~~~~~~~~~~
+
+Version 0.27.4:
+       * Fixed a bug that caused Wild Mages to get the incorrect amount
+       	  of XP drained to compensate the special Wild Mage spells' XP
+	  reward, which caused a great XP loss and if the character
+	  had less than 10,000 XP it would make them reach level 40 on
+	  every class.
+	* Updated to WeiDU 240.
+	* Added SoD compatibility.
 
 Version 0.27.3:
        * Licensed under the MIT License as per FlameWing's wishes

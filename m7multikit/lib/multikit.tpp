@@ -467,7 +467,7 @@ BEGIN
 				"specval" = "%mspecval%"
 				"base_fx_offset" = "%mbase_fx_offset%"
 			STR_VAR
-				"fxprefix" = EVALUATE_BUFFER "%mfxprefix%"
+				"fxprefix" = EVAL "%mfxprefix%"
 			RET
 				"currsuffix" = "lastsuffix" END
 		// Where the first ability is:
@@ -494,7 +494,7 @@ BEGIN
 					"specval" = "%mspecval%"
 					"base_fx_offset" = "%mbase_fx_offset%"
 				STR_VAR
-					"fxprefix" = EVALUATE_BUFFER "%mfxprefix%"
+					"fxprefix" = EVAL "%mfxprefix%"
 				RET
 					"currsuffix" = "lastsuffix" END
 			// Advance to next ability:
@@ -513,9 +513,9 @@ BEGIN
 			"specval" = "%mspecval%"
 			"base_fx_offset" = "%mbase_fx_offset%"
 		STR_VAR
-			"sourcespell" = EVALUATE_BUFFER "%msourcespell%"
-			"destspell" = EVALUATE_BUFFER "%mdestspell%"
-			"fxprefix" = EVALUATE_BUFFER "%mfxprefix%"
+			"sourcespell" = EVAL "%msourcespell%"
+			"destspell" = EVAL "%mdestspell%"
+			"fxprefix" = EVAL "%mfxprefix%"
 		RET
 			"currsuffix" = "lastsuffix" END
 	// Continue doing ability effects.
@@ -528,9 +528,9 @@ BEGIN
 				"specval" = "%mspecval%"
 				"base_fx_offset" = "%mbase_fx_offset%"
 			STR_VAR
-				"sourcespell" = EVALUATE_BUFFER "%msourcespell%"
-				"destspell" = EVALUATE_BUFFER "%mdestspell%"
-				"fxprefix" = EVALUATE_BUFFER "%mfxprefix%"
+				"sourcespell" = EVAL "%msourcespell%"
+				"destspell" = EVAL "%mdestspell%"
+				"fxprefix" = EVAL "%mfxprefix%"
 			RET
 				"currsuffix" = "lastsuffix" END
 	END
@@ -708,7 +708,7 @@ BEGIN
 			// Read one line at a time.
 			LAUNCH_PATCH_FUNCTION ~m7#read_line~
 				INT_VAR
-					"offset" = EVALUATE_BUFFER "%line%"
+					"offset" = EVAL "%line%"
 				RET
 					"pos" = "position"
 					"linestr" = "line_text" END
@@ -752,7 +752,7 @@ BEGIN
 				WRITE_ASCIIE "%offset%" "%componid%"
 			END
 		END
-		BUT_ONLY_IF_IT_CHANGES
+		BUT_ONLY
 END
 
 // Find last used designation.
@@ -769,7 +769,7 @@ BEGIN
 			// Read one line at a time.
 			LAUNCH_PATCH_FUNCTION ~m7#read_line~
 				INT_VAR
-					"offset" = EVALUATE_BUFFER "%line%"
+					"offset" = EVAL "%line%"
 				RET
 					"pos" = "position"
 					"linestr" = "line_text" END
@@ -1248,16 +1248,16 @@ BEGIN
 					SET "indexreq" = 0 - 1
 					SET "indexexc" = 0 - 1
 					// Get the strings.
-					SPRINT "val_reqi" $abl_reqi(EVALUATE_BUFFER "%idx%")
-					SPRINT "val_excl" $abl_excl(EVALUATE_BUFFER "%idx%")
+					SPRINT "val_reqi" $abl_reqi(EVAL "%idx%")
+					SPRINT "val_excl" $abl_excl(EVAL "%idx%")
 					// Find index of abilities.
 					PHP_EACH "abl_file" AS "id2" => "abl2" BEGIN
 						PATCH_IF ("%abl2%" STRING_EQUAL_CASE "%val_reqi%") BEGIN
-							SET "indexreq" = EVALUATE_BUFFER "%id2%"
+							SET "indexreq" = EVAL "%id2%"
 							// We have a dependency!
-							SET $abl_depi(EVALUATE_BUFFER "%id2%") += 1
+							SET $abl_depi(EVAL "%id2%") += 1
 						END ELSE PATCH_IF ("%abl2%" STRING_EQUAL_CASE "%val_excl%") BEGIN
-							SET "indexexc" = EVALUATE_BUFFER "%id2%"
+							SET "indexexc" = EVAL "%id2%"
 						END
 					END
 					// Set to index. If not on list, it is -1.
@@ -1300,44 +1300,44 @@ BEGIN
 										// Yes, append it to this list.
 										SET "doappend" = 1
 										// Use 2 characters for the numeric id.
-										PATCH_IF (EVALUATE_BUFFER "%idx%" < 10) BEGIN
-											WRITE_ASCIIE  0 EVALUATE_BUFFER "[ %idx%]"
+										PATCH_IF (EVAL "%idx%" < 10) BEGIN
+											WRITE_ASCIIE  0 EVAL "[ %idx%]"
 										END ELSE BEGIN
-											WRITE_ASCIIE  0 EVALUATE_BUFFER "[%idx%]"
+											WRITE_ASCIIE  0 EVAL "[%idx%]"
 										END
 										// Write the ability name.
-										SPRINT "val" EVALUATE_BUFFER $abl_name("%idx%")
-										WRITE_ASCIIE  6 EVALUATE_BUFFER "%val%"
+										SPRINT "val" EVAL $abl_name("%idx%")
+										WRITE_ASCIIE  6 EVAL "%val%"
 										// Time now for the HLA requirement.
-										SET "val" = EVALUATE_BUFFER $abl_reqi("%idx%")
-										PATCH_IF (EVALUATE_BUFFER "%val%" < 0) BEGIN
+										SET "val" = EVAL $abl_reqi("%idx%")
+										PATCH_IF (EVAL "%val%" < 0) BEGIN
 											SPRINT "val" "----"
-										END ELSE PATCH_IF (EVALUATE_BUFFER "%val%" < 10) BEGIN
-											SPRINT "val" EVALUATE_BUFFER "[ %val%]"
+										END ELSE PATCH_IF (EVAL "%val%" < 10) BEGIN
+											SPRINT "val" EVAL "[ %val%]"
 										END ELSE BEGIN
-											SPRINT "val" EVALUATE_BUFFER "[%val%]"
+											SPRINT "val" EVAL "[%val%]"
 										END
-										WRITE_ASCIIE 41 EVALUATE_BUFFER "%val%"
+										WRITE_ASCIIE 41 EVAL "%val%"
 										// HLA exclusion.
-										SET "val" = EVALUATE_BUFFER $abl_excl("%idx%")
-										PATCH_IF (EVALUATE_BUFFER "%val%" < 0) BEGIN
+										SET "val" = EVAL $abl_excl("%idx%")
+										PATCH_IF (EVAL "%val%" < 0) BEGIN
 											SPRINT "val" "----"
-										END ELSE PATCH_IF (EVALUATE_BUFFER "%val%" < 10) BEGIN
-											SPRINT "val" EVALUATE_BUFFER "[ %val%]"
+										END ELSE PATCH_IF (EVAL "%val%" < 10) BEGIN
+											SPRINT "val" EVAL "[ %val%]"
 										END ELSE BEGIN
-											SPRINT "val" EVALUATE_BUFFER "[%val%]"
+											SPRINT "val" EVAL "[%val%]"
 										END
-										WRITE_ASCIIE 47 EVALUATE_BUFFER "%val%"
+										WRITE_ASCIIE 47 EVAL "%val%"
 										// Finally, alignment restriction.
-										SET "val" = EVALUATE_BUFFER $abl_algn("%idx%")
-										PATCH_IF (EVALUATE_BUFFER "%val%" > 0) BEGIN
+										SET "val" = EVAL $abl_algn("%idx%")
+										PATCH_IF (EVAL "%val%" > 0) BEGIN
 											SPRINT "val" @1300021
-										END ELSE PATCH_IF (EVALUATE_BUFFER "%val%" < 0) BEGIN
+										END ELSE PATCH_IF (EVAL "%val%" < 0) BEGIN
 											SPRINT "val" @1300022
 										END ELSE BEGIN
 											SPRINT "val" ""
 										END
-										WRITE_ASCIIE 53 EVALUATE_BUFFER "%val%"
+										WRITE_ASCIIE 53 EVAL "%val%"
 									END
 								END
 								// Append it if needed.
@@ -1501,7 +1501,7 @@ BEGIN
 							SPRINT "excls" "*"
 						END
 						// Alignment restriction: -1 = evil, 1 = good, 0 = none.
-						SET "algn" = EVALUATE_BUFFER $abl_algn("%idx%")
+						SET "algn" = EVAL $abl_algn("%idx%")
 						PATCH_IF ("%algn%" > 0) BEGIN
 							SPRINT "algns" "ALL_GOOD"
 						END ELSE PATCH_IF ("%algn%" < 0) BEGIN
@@ -1933,7 +1933,7 @@ STRING_LENGTH kitid == 0~
 			COPY_EXISTING ~%defclab%.2da~ ~override~
 				COUNT_2DA_COLS "scols"
 				COUNT_2DA_ROWS "%scols%" "srows"
-				BUT_ONLY_IF_IT_CHANGES
+				BUT_ONLY
 		END ELSE BEGIN
 			// Just in case.
 			OUTER_SET "scols" = 0
@@ -2048,6 +2048,7 @@ STRING_LENGTH kitid == 0~
 				// not from a mage class).
 				OUTER_SPRINT "newabl" "AP_m7tcwiz"
 			// Old way of handling wild magi:
+<<<<<<< Updated upstream
 			END ELSE ACTION_IF GAME_IS "bg2ee bgee eet iwdee" BEGIN
 			    	COPY_EXISTING xpbonus.2da override
 				    	COUNT_2DA_COLS colsn
@@ -2056,6 +2057,16 @@ STRING_LENGTH kitid == 0~
 					READ_2DA_ENTRY 6 8 colsn lvl7xp
 			    	    	wild_mage_xp_remove = (0 - lvl1xp) + (0 - lvl2xp) + (0 - lvl7xp)
 				BUT_ONLY
+=======
+			END ELSE ACTION_IF GAME_IS "bg2ee bgee eet iwdee sod" BEGIN
+			    	COPY_EXISTING xpbonus.2da override
+				    	COUNT_2DA_COLS colsn
+			    	    	READ_2DA_ENTRY 6 2 colsn lvl1xp
+					READ_2DA_ENTRY 6 3 colsn lvl2xp
+					READ_2DA_ENTRY 6 8 colsn lvl7xp
+			    	    	wild_mage_xp_remove = (0 - lvl1xp) + (0 - lvl2xp) + (0 - lvl7xp)
+				BUT_ONLY
+>>>>>>> Stashed changes
 				// Wild mage. Add the extra spells known and remove the extra
 				// experience gained by learning wild magic:
 				OUTER_SPRINT "extra_actions" EVAL ~%extra_actions%
@@ -2114,9 +2125,9 @@ STRING_LENGTH kitid == 0~
 								"suffixid" = "%lastefftok%"
 								"specval" = "%kitspec%"
 							STR_VAR
-								"sourcespell" = EVALUATE_BUFFER "%spl%"
-								"destspell" = EVALUATE_BUFFER "%spellpat%%tok%"
-								"fxprefix" = EVALUATE_BUFFER "%spellpat%"
+								"sourcespell" = EVAL "%spl%"
+								"destspell" = EVAL "%spellpat%%tok%"
+								"fxprefix" = EVAL "%spellpat%"
 							RET
 								"lastefftok" = "lastsuffix" END
 					END ELSE BEGIN
@@ -2228,7 +2239,7 @@ STRING_LENGTH kitid == 0~
 				COPY_EXISTING ~%defclab%.2da~ ~override~
 					COUNT_2DA_COLS "scols"
 					COUNT_2DA_ROWS "%scols%" "srows"
-					BUT_ONLY_IF_IT_CHANGES
+					BUT_ONLY
 			END ELSE BEGIN
 				// Just in case.
 				OUTER_SET "scols" = 0
@@ -2277,7 +2288,7 @@ STRING_LENGTH kitid == 0~
 			// Finally, leave it looking good...
 			COPY_EXISTING ~%defclab%.2da~ ~override~
 				PRETTY_PRINT_2DA
-				BUT_ONLY_IF_IT_CHANGES
+				BUT_ONLY
 		END
 	END
 
@@ -2526,7 +2537,7 @@ STRING_LENGTH kitid == 0~
 
 	CLEAR_IDS_MAP
 
-	ACTION_IF GAME_IS "eet iwdee bgee bg2ee" BEGIN
+	ACTION_IF GAME_IS "eet iwdee bgee bg2ee sod" BEGIN
 		REINCLUDE "%basepath%/lib/7c#ee_multikit.tph"
 	END
 
@@ -2555,7 +2566,7 @@ END
 
 	// Compile it.
 	COPY ~../m7multikit-inlined/multikit.baf~ ~scripts/%modprefix%%kitprefix%.bs~
-		EVALUATE_BUFFER
+		EVAL
 		COMPILE_BAF_TO_BCS
 
 	// Name and description for the script.
@@ -2566,7 +2577,7 @@ END
 		REPLACE ~scripname~ ~%mixname%~
 		REPLACE ~scripdesc~ @1300010
 		PRETTY_PRINT_2DA
-		BUT_ONLY_IF_IT_CHANGES
+		BUT_ONLY
 
 	// Pretty-print them all.
 	COPY_EXISTING ~clasweap.2da~ ~override~
@@ -2579,14 +2590,14 @@ END
 		          ~dualclas.2da~ ~override~
 		          ~kitlist.2da~  ~override~
 		PRETTY_PRINT_2DA
-		BUT_ONLY_IF_IT_CHANGES
+		BUT_ONLY
 
 	// Working around a bug regarding variables in WeiDU AddKit.
 	COPY_EXISTING ~25stweap.2da~ ~override~
 		SPRINT "buff" "kitid"
 		REPLACE_TEXTUALLY CASE_INSENSITIVE EXACT_MATCH "%%buff%%" "%kitid%"
 		PRETTY_PRINT_2DA
-		BUT_ONLY_IF_IT_CHANGES
+		BUT_ONLY
 
 	OUTER_SPRINT "prompt" @1300011
 	OUTER_PATCH_SAVE "prompt2" "%prompt%" BEGIN
