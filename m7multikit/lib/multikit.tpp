@@ -2049,11 +2049,18 @@ STRING_LENGTH kitid == 0~
 				OUTER_SPRINT "newabl" "AP_m7tcwiz"
 			// Old way of handling wild magi:
 			END ELSE ACTION_IF GAME_IS "bg2ee bgee eet iwdee" BEGIN
+			    	COPY_EXISTING xpbonus.2da override
+				    	COUNT_2DA_COLS colsn
+			    	    	READ_2DA_ENTRY 6 2 colsn lvl1xp
+					READ_2DA_ENTRY 6 3 colsn lvl2xp
+					READ_2DA_ENTRY 6 8 colsn lvl7xp
+			    	    	wild_mage_xp_remove = (0 - lvl1xp) + (0 - lvl2xp) + (0 - lvl7xp)
+				BUT_ONLY
 				// Wild mage. Add the extra spells known and remove the extra
 				// experience gained by learning wild magic:
-				OUTER_SPRINT "extra_actions" ~%extra_actions%
+				OUTER_SPRINT "extra_actions" EVAL ~%extra_actions%
 		ActionOverride(Myself,ReallyForceSpellRES("m7wild",Myself))
-		AddexperienceParty(-10000)~
+		AddexperienceParty(%wild_mage_xp_remove%)~
 			END
 			ACTION_IF ((STRING_LENGTH "%newabl%") > 0) BEGIN
 				// Add new line for this ability.
