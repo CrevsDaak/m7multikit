@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2010-2011 FlameWing
- * Copyright (C) 2015 CrevsDaak
+ * Copyright (C) 2015-2016 CrevsDaak
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
