@@ -2048,16 +2048,6 @@ STRING_LENGTH kitid == 0~
 				// not from a mage class).
 				OUTER_SPRINT "newabl" "AP_m7tcwiz"
 			// Old way of handling wild magi:
-<<<<<<< Updated upstream
-			END ELSE ACTION_IF GAME_IS "bg2ee bgee eet iwdee" BEGIN
-			    	COPY_EXISTING xpbonus.2da override
-				    	COUNT_2DA_COLS colsn
-			    	    	READ_2DA_ENTRY 6 2 colsn lvl1xp
-					READ_2DA_ENTRY 6 3 colsn lvl2xp
-					READ_2DA_ENTRY 6 8 colsn lvl7xp
-			    	    	wild_mage_xp_remove = (0 - lvl1xp) + (0 - lvl2xp) + (0 - lvl7xp)
-				BUT_ONLY
-=======
 			END ELSE ACTION_IF GAME_IS "bg2ee bgee eet iwdee sod" BEGIN
 			    	COPY_EXISTING xpbonus.2da override
 				    	COUNT_2DA_COLS colsn
@@ -2066,7 +2056,6 @@ STRING_LENGTH kitid == 0~
 					READ_2DA_ENTRY 6 8 colsn lvl7xp
 			    	    	wild_mage_xp_remove = (0 - lvl1xp) + (0 - lvl2xp) + (0 - lvl7xp)
 				BUT_ONLY
->>>>>>> Stashed changes
 				// Wild mage. Add the extra spells known and remove the extra
 				// experience gained by learning wild magic:
 				OUTER_SPRINT "extra_actions" EVAL ~%extra_actions%
