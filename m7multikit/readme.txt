@@ -1,6 +1,6 @@
                              Baldur's Gate II
                         Multiclass Multikit Builder
-                              Version 0.27.4
+                              Version 0.27.5
 
 		Table of Contents
 		~~~~~~~~~~~~~~~~~
