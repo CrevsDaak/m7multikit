@@ -1915,8 +1915,22 @@ STRING_LENGTH kitid == 0~
 		// experience gained by learning wild magic:
 		OUTER_SPRINT "extra_actions" ~%extra_actions%
 		ActionOverride(Myself,ReallyForceSpellRES("m7wild",Myself))~
-		// No longer needed (TobEx):
-		//AddexperienceParty(-10000)~
+		// Old way of handling wild magi (now for EE games only)
+		ACTION_IF !ENGINE_IS tob BEGIN
+			COPY_EXISTING - xpbonus.2da override
+				COUNT_2DA_COLS colsn
+			    	READ_2DA_ENTRY 2 1 colsn lvl1xp
+				READ_2DA_ENTRY 2 2 colsn lvl2xp
+				READ_2DA_ENTRY 2 7 colsn lvl7xp
+				//PATCH_PRINT ~%lvl1xp%/%lvl2xp%/%lvl7xp%~
+				wild_mage_xp_remove = (0 - lvl1xp) + (0 - lvl2xp) + (0 - lvl7xp)
+				//PATCH_PRINT ~%wild_mage_xp_remove%~
+			BUT_ONLY
+			// Wild mage. Add the extra spells known and remove the extra
+			// experience gained by learning wild magic:
+			OUTER_SPRINT "extra_actions" EVAL ~%extra_actions%
+				     AddexperienceParty(%wild_mage_xp_remove%)~
+		END
 	END
 
 	ACTION_PHP_EACH "clabs" AS "id" => "clab" BEGIN
@@ -2047,22 +2061,6 @@ STRING_LENGTH kitid == 0~
 				// gained by any kitted mage (even multiclassed kits with a kit
 				// not from a mage class).
 				OUTER_SPRINT "newabl" "AP_m7tcwiz"
-			// Old way of handling wild magi:
-			END ELSE ACTION_IF GAME_IS "bg2ee bgee eet iwdee sod" BEGIN
-			    	COPY_EXISTING xpbonus.2da override
-				    	COUNT_2DA_COLS colsn
-			    	    	READ_2DA_ENTRY 6 2 colsn lvl1xp
-					READ_2DA_ENTRY 6 3 colsn lvl2xp
-					READ_2DA_ENTRY 6 8 colsn lvl7xp
-			    	    	wild_mage_xp_remove = (0 - lvl1xp) + (0 - lvl2xp) + (0 - lvl7xp)
-				BUT_ONLY
-				// Wild mage. Add the extra spells known and remove the extra
-				// experience gained by learning wild magic:
-				OUTER_SPRINT "extra_actions" EVAL ~%extra_actions%
-		ActionOverride(Myself,ReallyForceSpellRES("m7wild",Myself))
-		AddexperienceParty(%wild_mage_xp_remove%)~
-			END
-			ACTION_IF ((STRING_LENGTH "%newabl%") > 0) BEGIN
 				// Add new line for this ability.
 				OUTER_SPRINT $abilities("%abl_rows%") "%newabl%"
 				OUTER_SET "abl_rows" += 1
