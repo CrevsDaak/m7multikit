@@ -198,7 +198,10 @@ COPY_EXISTING - clasthac.2da override
 	END
 BUT_ONLY
 
-ACTION_IF kitclassids = 13 || kitclassids = 15 || kitclassids = 10 || kitclassids = 18 || kitclassids != 9 BEGIN
+OUTER_SET is_thief = 0
+
+ACTION_IF kitclassids = 13 || kitclassids = 15 || kitclassids = 10 || kitclassids = 18 || kitclassids = 9 BEGIN
+	OUTER_SET is_thief = 1
 	COPY_EXISTING - clasiskl.2da override
 		COUNT_2DA_COLS __cols_daak
 		READ_2DA_ENTRIES_NOW __clasiskl_cd __cols_daak - 1
@@ -312,8 +315,8 @@ ACTION_IF FILE_CONTAINS_EVALUATED (clastext.2da "FALLEN_%kit0%") || FILE_CONTAIN
 	OUTER_SET multikit_fallen = RESOLVE_STR_REF (@1300040)
 	OUTER_SET multikit_fallen_notice = RESOLVE_STR_REF (@1300041)
 END ELSE BEGIN
-	OUTER_SET multikit_fallen = 0-2
-	OUTER_SET multikit_fallen_notice = 0-2
+	OUTER_SET multikit_fallen = (0 - 2)
+	OUTER_SET multikit_fallen_notice = (0 - 2)
 END
 
 COPY_EXISTING - clswpbon.2da override
@@ -373,13 +376,14 @@ END ELSE BEGIN
 	OUTER_SET __unprof_penalty = __unprof_penalty_0 > __unprof_penalty_1 ? __unprof_penalty_1 : __unprof_penalty_0
 END
 
-OUTER_SPRINT multikit_clswpbon "%__has_spec_apr% %__unarmed_divisor% %__unprof_penalty%"
+OUTER_SPRINT multikit_clswpbon EVAL "%__has_spec_apr% %__unarmed_divisor% %__unprof_penalty%"
 
 LAF fl#add_kit_ee
 	INT_VAR
 		7c#kit_class = "%kitclassids%"
 		fallen = "%multikit_fallen%"
 		fallen_notice = "%multikit_fallen_notice%"
+		7c#thief_class = is_thief
 	STR_VAR
 		kit_name = EVAL "%kitid%"
 		backstab = EVAL "%multikit_backstab%"

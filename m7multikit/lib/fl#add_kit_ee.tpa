@@ -110,6 +110,7 @@ DEFINE_ACTION_FUNCTION fl#add_kit_ee#validate
   INT_VAR
     kit_number = 0
     kit_class = 0
+    thief_class = 0
   STR_VAR
     kit_name = ""
     backstab = ""
@@ -131,14 +132,13 @@ DEFINE_ACTION_FUNCTION fl#add_kit_ee#validate
     sneakatt
     crippstr
 BEGIN
-  ACTION_IF (kit_class != 13 OR kit_class != 15 OR kit_class != 10 OR kit_class != 18 OR kit_class != 9)
-  AND ("%backstab%" STR_CMP "" OR
-       "%thiefskl%" STR_CMP "" OR
-       "%traplimt%" STR_CMP "" OR
-       "%sneakatt%" STR_CMP "" OR
-       "%crippstr%" STR_CMP "")
+  ACTION_IF thief_class = 0 AND ("%backstab%" STR_CMP "" OR
+  	    		       	    "%thiefskl%" STR_CMP "" OR
+				    "%traplimt%" STR_CMP "" OR
+				    "%sneakatt%" STR_CMP "" OR
+				    "%crippstr%" STR_CMP "")
   BEGIN
-    PRINT @1300037
+    WARN @1300037
     OUTER_SPRINT backstab ""
     OUTER_SPRINT thiefskl ""
     OUTER_SPRINT traplimt ""
@@ -181,6 +181,7 @@ DEFINE_ACTION_FUNCTION fl#add_kit_ee
     briefdesc = "-2"
     fallen_notice = "-2"
     7c#kit_class = 0
+    7c#thief_class = 0
   STR_VAR
     kit_name = ""
     backstab = ""
@@ -223,6 +224,7 @@ BEGIN
       INT_VAR
         kit_number
         kit_class = 7c#kit_class
+	thief_class = 7c#thief_class
       STR_VAR
         kit_name
         backstab
