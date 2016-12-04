@@ -1,6 +1,6 @@
                              Baldur's Gate II
                         Multiclass Multikit Builder
-                              Version 0.27.6
+                              Version 0.27.7
 
 		Table of Contents
 		~~~~~~~~~~~~~~~~~
@@ -139,6 +139,17 @@ in the patch notes.
 
 		Section VI. Changelog
 		~~~~~~~~~~~~~~~~~~~~~
+Version 0.27.7:
+      * No longer gives false warnings with Mage/Thief multikits.
+      * Some multikits no longer fail to install in EE due to a mistake in the code.
+
+Version 0.27.6:
+      * No longer fails to install Mage multikits.
+      * Wild Mage's XP deduction now correctly calculated (it works now).
+
+Version 0.27.5:
+       * Installation no longer fails due to a syntax error because
+         I'm bad with git.
 
 Version 0.27.4:
        * Fixed a bug that caused Wild Mages to get the incorrect amount
