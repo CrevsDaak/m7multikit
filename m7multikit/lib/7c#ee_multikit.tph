@@ -27,7 +27,7 @@
  *	This is in the form of a library file for easier use in other mods.
  *
  *	Created by Nicolas C. aka Crevs Daak on 2014-12-08.
- *	Last edited on 2016-10-16.
+ *	Last edited on 2016-12-04.
  *
  *	Supporting file for the Multikit mod.
  *
@@ -35,7 +35,7 @@
  *
  */
 
-OUTER_SPRINT "7c#ee_multikit_version" "1.0.2 Multikit %m7version%"
+OUTER_SPRINT "7c#ee_multikit_version" "v1.0.3 Multikit %m7version%"
 INCLUDE "%basepath%/lib/fl#add_kit_ee.tpa"
 
 ACTION_FOR_EACH multikit_string IN

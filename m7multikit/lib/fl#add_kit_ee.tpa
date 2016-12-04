@@ -11,7 +11,9 @@
 // Last Edited: 2016-10-16, to add SoD compatibility,
 // taken directly from Wisp's v1.1.3.
 
-OUTER_SPRINT fl#add_kit_ee#version "v1.0.6 Multikit %m7version%"
+// Edited 2016-12-04: No longer identifies M/Ts as non-Thieves.
+
+OUTER_SPRINT fl#add_kit_ee#version "v1.0.7 Multikit %m7version%"
 
 DEFINE_ACTION_FUNCTION fl#add_kit_ee#get_row
   STR_VAR
