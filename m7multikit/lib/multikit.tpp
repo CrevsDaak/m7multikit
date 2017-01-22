@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2010-2011 FlameWing
- * Copyright (C) 2015-2016 CrevsDaak
+ * Copyright (C) 2015-2017 CrevsDaak
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1266,8 +1266,14 @@ BEGIN
 					SET "idx" += 1
 				END
 
+				PATCH_IF ENGINE_IS tob BEGIN // Crevs: if EE, one HLA more can be addded to the lu file.
+					 __max_hla_ = 24
+				END ELSE BEGIN
+				    	 __max_hla_ = 25
+				END
+
 				// Do we need to do anything other than to generate the file?
-				PATCH_IF ("%abl_count%" > 24) BEGIN
+				PATCH_IF ("%abl_count%" > __max_hla_) BEGIN
 					// Yes. Prompt the user to remove abilities from table.
 					// Build the prompt first.
 					DEFINE_ARRAY "trail_strs"  BEGIN END
@@ -1356,7 +1362,7 @@ BEGIN
 						INNER_PATCH_SAVE "prompt" "%baseprompt%" BEGIN
 							// Be sure to let the user know that he can quit
 							// if already at desired size.
-							PATCH_IF ("%curr_count%" > 24) BEGIN
+							PATCH_IF ("%curr_count%" > __max_hla_) BEGIN
 								SPRINT "repl" @1300024
 							END ELSE BEGIN
 								SPRINT "repl" @1300025
@@ -1369,7 +1375,7 @@ BEGIN
 						PATCH_IF (NOT (IS_AN_INT "%val%")) BEGIN
 							// We want an integer:
 							PATCH_PRINT @1300002
-						END ELSE PATCH_IF ("%val%" < 0 AND "%curr_count%" <= 24) BEGIN
+						END ELSE PATCH_IF ("%val%" < 0 AND "%curr_count%" <= __max_hla_) BEGIN
 							// Negative number when list is at right size.
 							// Time to quit this loop.
 							SET "looping2" = 0
@@ -2524,7 +2530,7 @@ STRING_LENGTH kitid == 0~
 
 	CLEAR_IDS_MAP
 
-	ACTION_IF GAME_IS "eet iwdee bgee bg2ee sod" BEGIN
+	ACTION_IF !ENGINE_IS tob BEGIN
 		REINCLUDE "%basepath%/lib/7c#ee_multikit.tph"
 	END
 
