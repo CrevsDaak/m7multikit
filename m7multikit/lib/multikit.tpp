@@ -2246,6 +2246,7 @@ STRING_LENGTH kitid == 0~
 					OUTER_SPRINT "buff" "%buff% ****"
 				END
 				OUTER_FOR ("%i%" = "%scols%" + 1; "%i%" <= "%maxw%"; "%i%" += 1) BEGIN
+					PRINT ~Here, things start going south...~
 					APPEND_COL ~%defclab%.2da~ "%i%%buff%"
 				END
 			END
@@ -2256,7 +2257,7 @@ STRING_LENGTH kitid == 0~
 			ACTION_PHP_EACH "rows_2da" AS "id2" => "abl" BEGIN
 				//OUTER_SPRINT "tok" $tokens("%index%")
 				OUTER_SET "idx" = "%srows%" + "%id2%" + 1
-				LAUNCH_ACTION_FUNCTION ~m7#get_suffix_padded~
+				LAF ~m7#get_suffix_padded~
 					INT_VAR
 						"number" = "%idx%"
 					RET

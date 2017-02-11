@@ -112,6 +112,8 @@ BEGIN
 		END
 	BUT_ONLY
 END
+
+OUTER_SET __kit_has_backstab_ = 1
 	
 ACTION_IF $classes(1) STRING_EQUAL "THIEF" || $classes(1) STRING_EQUAL "RANGER" BEGIN
 	ACTION_IF FILE_CONTAINS_EVALUATED (backstab.2da "%kit1%") BEGIN
@@ -159,6 +161,12 @@ ACTION_IF $classes(1) STRING_EQUAL "THIEF" || $classes(1) STRING_EQUAL "RANGER" 
 				multikit_sneakatt = __desired_row_
 		END
 	END
+	ACTION_IF !FILE_CONTAINS_EVALUATED (backstab.2da "%kit1%") AND
+		  !FILE_CONTAINS_EVALUATED (sneakatt.2da "%kit1%") AND
+		  !FILE_CONTAINS_EVALUATED (crippstr.2da "%kit1%")
+        BEGIN
+		OUTER_SET __kit_has_backstab_ = 0
+	END
 END ELSE ACTION_IF $classes(2) STRING_EQUAL "THIEF" BEGIN
 	ACTION_IF FILE_CONTAINS_EVALUATED (backstab.2da "%kit2%") BEGIN
 		LAF 7c#get_row
@@ -205,12 +213,18 @@ END ELSE ACTION_IF $classes(2) STRING_EQUAL "THIEF" BEGIN
 				multikit_sneakatt = __desired_row_
 		END
 	END
-END
+	ACTION_IF !FILE_CONTAINS_EVALUATED (backstab.2da "%kit2%") AND
+		  !FILE_CONTAINS_EVALUATED (sneakatt.2da "%kit2%") AND
+		  !FILE_CONTAINS_EVALUATED (crippstr.2da "%kit2%")
+        BEGIN
+		OUTER_SET __kit_has_backstab_ = 0
+	END
+END	  
 
 OUTER_SET SELKATH_OR_SEKOLAH = 0
 
 ACTION_IF FILE_CONTAINS_EVALUATED (backstab.2da "%kit1%") && $classes(1) STRING_EQUAL "RANGER" BEGIN
-	OUTER_SET SELKATH_OR_SEKOLAH = 1 // yup, fish be stalkers 100% no fake
+	OUTER_SET SELKATH_OR_SEKOLAH = 1 // yup, fish be stalkers 100% no fake 4 reals
 END
 
 COPY_EXISTING - clasthac.2da override
@@ -419,6 +433,7 @@ LAF fl#add_kit_ee
 		fallen_notice = "%multikit_fallen_notice%"
 		7c#thief_class = is_thief
 		7c#stalker_kit = SELKATH_OR_SEKOLAH // Imma humanoyd oceanik fisssh
+		__has_backstab_ = __kit_has_backstab_
 	STR_VAR
 		kit_name = EVAL "%kitid%"
 		backstab = EVAL "%multikit_backstab%"
