@@ -955,10 +955,10 @@ BEGIN
 					PATCH_IF ("%val%" == "%idsval%") BEGIN
 						// Kit symbol.
 						READ_2DA_ENTRY "%index%" 1 "%cols%" "name"
-						PATCH_IF // list taken from level1npcs, partially updated
+						PATCH_IF // list taken from level1npcs, needs update
 							~%name%~ STR_CMP ~sswashtF~ &&
                     					~%name%~ STR_CMP ~sswashtw~ &&
-							~%name~ STR_CMP ~LATHANDER_X~ &&
+							~%name%~ STR_CMP ~LATHANDER_X~ &&
                     					~%name%~ STR_CMP ~trueres~ &&
 							~%name%~ STR_CMP ~shadowdancertw~ &&
 							~%name%~ STR_CMP ~shadowdancertf~ &&
@@ -1928,9 +1928,7 @@ STRING_LENGTH kitid == 0~
 			    	READ_2DA_ENTRY 2 1 colsn lvl1xp
 				READ_2DA_ENTRY 2 2 colsn lvl2xp
 				READ_2DA_ENTRY 2 7 colsn lvl7xp
-				//PATCH_PRINT ~%lvl1xp%/%lvl2xp%/%lvl7xp%~
 				wild_mage_xp_remove = (0 - lvl1xp) + (0 - lvl2xp) + (0 - lvl7xp)
-				//PATCH_PRINT ~%wild_mage_xp_remove%~
 			BUT_ONLY
 			// Wild mage. Add the extra spells known and remove the extra
 			// experience gained by learning wild magic:
@@ -2060,9 +2058,9 @@ STRING_LENGTH kitid == 0~
 		OUTER_SPRINT "kit_swapping" ~%kit_swapping%
 		ActionOverride(Myself,AddKit(%kitids%))~
 		// Special case for true-class mage components.
+		OUTER_SPRINT "newabl" ""
 		ACTION_IF ("%class%" == 1) BEGIN
-			OUTER_SPRINT "newabl" ""
-			ACTION_IF ("%kit%" STRING_EQUAL_CASE "MAGE") BEGIN
+			ACTION_IF ("%kitids%" STRING_EQUAL_CASE "TRUECLASS") BEGIN
 				// True class mage. This spell removes the extra spell per level
 				// gained by any kitted mage (even multiclassed kits with a kit
 				// not from a mage class).
@@ -2240,14 +2238,19 @@ STRING_LENGTH kitid == 0~
 			END
 
 			// Start by filling the columns addequatelly up to the maximum.
-			ACTION_IF ("%scols%" < "%maxw%") BEGIN
-				OUTER_SPRINT "buff" ""
-				OUTER_FOR ("%j%" = 0; "%j%" < "%srows%"; "%j%" += 1) BEGIN
-					OUTER_SPRINT "buff" "%buff% ****"
+			ACTION_IF (scols < maxw) && FILE_EXISTS_IN_GAME "%defclab%.2da" BEGIN //check pls
+				OUTER_SPRINT buff ""
+				OUTER_FOR (j = 0; j < srows; j += 1) BEGIN
+					OUTER_SPRINT buff "%buff% ****"
 				END
-				OUTER_FOR ("%i%" = "%scols%" + 1; "%i%" <= "%maxw%"; "%i%" += 1) BEGIN
-					PRINT ~Here, things start going south...~
-					APPEND_COL ~%defclab%.2da~ "%i%%buff%"
+				OUTER_FOR (i = scols + 1; i <= maxw; i += 1) BEGIN
+					// here things start going south...
+					OUTER_SPRINT __c7_final_clab_append_ "__c7_replace_me_1_ __c7_replace_me_2_ %i%%buff%" //it's the only way it works, sadly... lol
+					APPEND_COL ~%defclab%.2da~ "%__c7_final_clab_append_%"
+					COPY_EXISTING ~%defclab%.2da~ override
+					  REPLACE_TEXTUALLY ~__c7_replace_me_1_~ "" //as I've said before, this is sadly the only way lmfao
+					  REPLACE_TEXTUALLY ~__c7_replace_me_2_~ "" // RIP the worst bug this mod ever had
+					BUT_ONLY
 				END
 			END
 

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2010-2011 FlameWing
- * Copyright (C) 2015-2016 CrevsDaak
+ * Copyright (C) 2015-2017 CrevsDaak
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,11 +34,11 @@
  ******************************************************************************/
 BACKUP ~m7multikit/backup-kits~
 AUTHOR ~http://www.shsforums.net/topic/45258-multiclassed-multikit-builder-mod-experimental/~
-VERSION ~v0.27.7~
+VERSION ~v0.27.8~
 ALWAYS
 	// In the form of a library for easy additions of multikits.
 	INCLUDE ~m7multikit/lib/multikit.tpp~
-	OUTER_SPRINT m7version v0.27.7
+	OUTER_SPRINT m7version v0.27.8
 END
 NO_IF_EVAL_BUG
 LANGUAGE "English" "english" ~m7multikit/languages/english.tra~
@@ -49,4 +49,5 @@ LANGUAGE "English" "english" ~m7multikit/languages/english.tra~
  *                                                                            *
  *                                                                            *
  ******************************************************************************/
+
 

@@ -1,6 +1,6 @@
                              Baldur's Gate II
                         Multiclass Multikit Builder
-                              Version 0.27.7
+                              Version 0.27.8
 
 		Table of Contents
 		~~~~~~~~~~~~~~~~~
@@ -134,11 +134,21 @@ you're encouraged to try and report back any issue(s).
 
 Multiclass kit titles are not working correctly in the EE games, not
 even with the Set Title opcode. Last time I tried this it was in v1.3 so it
-might have changed, but Beamdog didn't drop a single line about this
-in the patch notes.
+might have changed.
 
 		Section VI. Changelog
 		~~~~~~~~~~~~~~~~~~~~~
+
+Version 0.27.8:
+      * Numerous bugs for EE were fixed.
+      * Non-Generalist Mages now get their extra Spellslot per level
+        as they should.
+      * No longer fails to install due to an incorrect number of
+        columns being appended to a clab file.
+      * Custom title selection enabled!
+      * Updated prompt about the Kit's internal name to warn the user of
+        using numbers as the first character of the name.
+
 Version 0.27.7:
       * No longer gives false warnings with Mage/Thief multikits.
       * Some multikits no longer fail to install in EE due to a mistake in the code.
