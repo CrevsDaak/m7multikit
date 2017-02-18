@@ -27,7 +27,7 @@
  *	This is in the form of a library file for easier use in other mods.
  *
  *	Created by Nicolas C. aka Crevs Daak on 2014-12-08.
- *	Last edited on 2017-01-22.
+ *	Last edited on 2017-02-17.
  *
  *	Supporting file for the Multikit mod.
  *
@@ -35,23 +35,8 @@
  *
  */
 
-OUTER_SPRINT "7c#ee_multikit_version" "v1.0.3 Multikit %m7version%"
+OUTER_SPRINT "7c#ee_multikit_version" "v1.0.4 Multikit %m7version%"
 INCLUDE "%basepath%/lib/fl#add_kit_ee.tpa"
-
-ACTION_FOR_EACH multikit_string IN
-	multikit_backstab
-	multikit_thiefskl
-	multikit_thiefscl
-	multikit_traplimt
-	multikit_sneakatt
-	multikit_crppstr
-	multikit_clswpbon
-	multikit_numwslot
-	multikit_clasthac
-	multikit_clasiskl
-BEGIN
-	OUTER_SPRINT "%multikit_string%" ""
-END
 
 DEFINE_ACTION_FUNCTION 7c#get_row
 	STR_VAR
@@ -77,37 +62,7 @@ BEGIN
 					SPRINT 7c#_7c#get_placeholder EVAL "%7c#_7c#get_placeholder%%7c_place_holder%"
 				END
 				SPRINT __desired_row_ "%7c#_7c#get_placeholder%"
-				PATCH_PRINT ~%__desired_row_%~
 				i = __new_var_w_no_name_ + 1
-			END
-		END
-	BUT_ONLY
-END
-
-DEFINE_ACTION_FUNCTION 7c#get_column
-	STR_VAR
-		the_one_thiefscl_kit = ""
-		file = ""
-BEGIN
-	COPY_EXISTING - "%file%.2da" override
-		SPRINT file_x EVAL "%file%"
-		COUNT_2DA_COLS 7c_7c_num_col
-		READ_2DA_ENTRIES_NOW file 7c_7c_num_col - 1
-		FOR (i = 0; i < 7c_7c_num_col - 1; ++i) BEGIN
-			READ_2DA_ENTRY_FORMER file 0 i the_one_thiefscl_entry
-			PATCH_IF "%the_one_thiefscl_entry%" STRING_EQUAL_CASE "%the_one_thiefscl_kit%" BEGIN
-				FOR (j = 0; j < file; ++j) BEGIN
-					READ_2DA_ENTRY_FORMER file j i 7c_thiefscl_place_holder
-					SPRINT 7c_hold_hold "%7c_hold_hold% %7c_thiefscl_place_holder%"
-				END
-				PATCH_MATCH "%file_x%" WITH
-					clasthac BEGIN
-						SPRINT multikit_clasthac "%7c_hold_hold%"
-					END
-
-					DEFAULT
-						PATCH_FAIL @1300042
-				END
 			END
 		END
 	BUT_ONLY
@@ -115,7 +70,7 @@ END
 
 OUTER_SET __kit_has_backstab_ = 1
 	
-ACTION_IF $classes(1) STRING_EQUAL "THIEF" || $classes(1) STRING_EQUAL "RANGER" BEGIN
+ACTION_IF $classes(1) STRING_EQUAL "THIEF" || ($classes(1) STRING_EQUAL "RANGER" && FILE_CONTAINS_EVALUATED (backstab.2da "%kit1%")) BEGIN
 	ACTION_IF FILE_CONTAINS_EVALUATED (backstab.2da "%kit1%") BEGIN
 		LAF 7c#get_row
 			STR_VAR
@@ -124,6 +79,35 @@ ACTION_IF $classes(1) STRING_EQUAL "THIEF" || $classes(1) STRING_EQUAL "RANGER" 
 			RET
 				multikit_backstab = __desired_row_
 		END
+	END ELSE BEGIN
+	        // find out WHAT THE FUCK is going on here
+	        COPY_EXISTING backstab.2da override		
+			SPRINT __2da_for_no_stab_ ""
+			SPRINT __backstab_2da_for_swashies_ ""
+		        COUNT_2DA_COLS __backstab_2da_cols_
+			READ_2DA_ENTRIES_NOW __backstab_2da_rows_ __backstab_2da_cols_
+			FOR (i = 0; i < __backstab_2da_rows_; i += 1) BEGIN
+			        READ_2DA_ENTRY_FORMER __backstab_2da_rows_ i 0 __kit_
+				PATCH_IF "%__kit_%" STRING_EQUAL_CASE "THIEF" BEGIN
+				        FOR (j = 1; j < __backstab_2da_cols_; j += 1) BEGIN
+					        READ_2DA_ENTRY_FORMER __backstab_2da_rows_ i j __backstab_2da_for_swashies_
+						PATCH_IF j < (__backstab_2da_cols_ - 1) BEGIN
+						        SPRINT __backstab_2da_for_swashies_ EVAL "%__backstab_2da_for_swashies_% "
+						END
+						SPRINT __2da_for_no_stab_ EVAL "%__2da_for_no_stab_%%__backstab_2da_for_swashies_%"
+						PATCH_PRINT ~%__2da_for_no_stab_% %j%~
+					END
+					i = __backstab_2da_rows_ + 1
+				END
+			END
+			INNER_PATCH_SAVE multikit_backstab "%__2da_for_no_stab_%" BEGIN
+			        REPLACE_TEXTUALLY ~2~ ~1~
+				REPLACE_TEXTUALLY ~3~ ~1~
+				REPLACE_TEXTUALLY ~4~ ~1~
+				REPLACE_TEXTUALLY ~5~ ~1~
+			END
+			SPRINT __2da_for_no_stab_ ""
+		BUT_ONLY
 	END
 	ACTION_IF FILE_CONTAINS_EVALUATED (thiefskl.2da "%kit1%") BEGIN
 		LAF 7c#get_row
@@ -151,6 +135,37 @@ ACTION_IF $classes(1) STRING_EQUAL "THIEF" || $classes(1) STRING_EQUAL "RANGER" 
 			RET
 				multikit_crippstr = __desired_row_
 		END
+	END ELSE BEGIN
+	        COPY_EXISTING crippstr.2da override
+			SPRINT __2da_for_no_stab_ ""
+			SPRINT __crippstr_2da_for_swashies_ ""
+		        COUNT_2DA_COLS __crippstr_2da_cols_
+			READ_2DA_ENTRIES_NOW __crippstr_2da_rows_ __crippstr_2da_cols_
+			FOR (i = 0; i < __crippstr_2da_rows_; i += 1) BEGIN
+			        READ_2DA_ENTRY_FORMER __crippstr_2da_rows_ i 0 __kit_
+				PATCH_IF "%__kit_%" STRING_EQUAL_CASE "THIEF" BEGIN
+				        FOR (j = 1; j < __crippstr_2da_cols_; j += 1) BEGIN
+					        READ_2DA_ENTRY_FORMER __crippstr_2da_rows_ i j __crippstr_2da_for_swashies_
+						PATCH_IF j < (__crippstr_2da_cols_ - 1) BEGIN
+						        SPRINT __crippstr_2da_for_swashies_ EVAL "%__crippstr_2da_for_swashies_% "
+						END
+						SPRINT __2da_for_no_stab_ EVAL "%__2da_for_no_stab_%%__crippstr_2da_for_swashies_%"
+					END
+					i = __crippstr_2da_rows_ + 1
+				END
+			END
+			INNER_PATCH_SAVE multikit_crippstr "%__2da_for_no_stab_%" BEGIN
+			        REPLACE_TEXTUALLY ~2~ ~0~
+				REPLACE_TEXTUALLY ~3~ ~0~
+				REPLACE_TEXTUALLY ~4~ ~0~
+				REPLACE_TEXTUALLY ~5~ ~0~
+				REPLACE_TEXTUALLY ~6~ ~0~
+				REPLACE_TEXTUALLY ~7~ ~0~
+				REPLACE_TEXTUALLY ~8~ ~0~
+				REPLACE_TEXTUALLY ~9~ ~0~
+			END
+			SPRINT __2da_for_no_stab_ ""
+		BUT_ONLY
 	END
 	ACTION_IF FILE_CONTAINS_EVALUATED (sneakatt.2da "%kit1%") BEGIN
 		LAF 7c#get_row
@@ -160,12 +175,39 @@ ACTION_IF $classes(1) STRING_EQUAL "THIEF" || $classes(1) STRING_EQUAL "RANGER" 
 			RET
 				multikit_sneakatt = __desired_row_
 		END
-	END
-	ACTION_IF !FILE_CONTAINS_EVALUATED (backstab.2da "%kit1%") AND
-		  !FILE_CONTAINS_EVALUATED (sneakatt.2da "%kit1%") AND
-		  !FILE_CONTAINS_EVALUATED (crippstr.2da "%kit1%")
-        BEGIN
-		OUTER_SET __kit_has_backstab_ = 0
+	END ELSE BEGIN
+	        COPY_EXISTING sneakatt.2da override
+			SPRINT __2da_for_no_stab_ ""
+			SPRINT __sneakatt_2da_for_swashies_ ""
+		        COUNT_2DA_COLS __sneakatt_2da_cols_
+			READ_2DA_ENTRIES_NOW __sneakatt_2da_rows_ __sneakatt_2da_cols_
+			FOR (i = 0; i < __sneakatt_2da_rows_; i += 1) BEGIN
+			        READ_2DA_ENTRY_FORMER __sneakatt_2da_rows_ i 0 __kit_
+				PATCH_IF "%__kit_%" STRING_EQUAL_CASE "THIEF" BEGIN
+				        FOR (j = 1; j < __sneakatt_2da_cols_; j += 1) BEGIN
+					        READ_2DA_ENTRY_FORMER __sneakatt_2da_rows_ i j __sneakatt_2da_for_swashies_
+						PATCH_IF j < (__sneakatt_2da_cols_ - 1) BEGIN
+						        SPRINT __sneakatt_2da_for_swashies_ EVAL "%__sneakatt_2da_for_swashies_% "
+						END
+						SPRINT __2da_for_no_stab_ EVAL "%__2da_for_no_stab_%%__sneakatt_2da_for_swashies_%"
+					END
+					i = __sneakatt_2da_rows_ + 1
+				END
+			END
+			INNER_PATCH_SAVE multikit_sneakatt "%__2da_for_no_stab_%" BEGIN
+			        REPLACE_TEXTUALLY ~2~ ~1~
+				REPLACE_TEXTUALLY ~3~ ~1~
+				REPLACE_TEXTUALLY ~4~ ~1~
+				REPLACE_TEXTUALLY ~5~ ~1~
+				REPLACE_TEXTUALLY ~6~ ~1~
+				REPLACE_TEXTUALLY ~7~ ~1~
+				REPLACE_TEXTUALLY ~8~ ~1~
+				REPLACE_TEXTUALLY ~9~ ~1~
+				REPLACE_TEXTUALLY ~10~ ~1~
+				REPLACE_TEXTUALLY ~11~ ~1~
+			END
+			SPRINT __2da_for_no_stab_ ""
+		BUT_ONLY
 	END
 END ELSE ACTION_IF $classes(2) STRING_EQUAL "THIEF" BEGIN
 	ACTION_IF FILE_CONTAINS_EVALUATED (backstab.2da "%kit2%") BEGIN
@@ -176,6 +218,33 @@ END ELSE ACTION_IF $classes(2) STRING_EQUAL "THIEF" BEGIN
 			RET
 				multikit_backstab = __desired_row_
 		END
+	END ELSE BEGIN
+	        COPY_EXISTING backstab.2da override
+			SPRINT __2da_for_no_stab_ ""
+			SPRINT __backstab_2da_for_swashies_ ""
+		        COUNT_2DA_COLS __backstab_2da_cols_
+			READ_2DA_ENTRIES_NOW __backstab_2da_rows_ __backstab_2da_cols_
+			FOR (i = 0; i < __backstab_2da_rows_; i += 1) BEGIN
+			        READ_2DA_ENTRY_FORMER __backstab_2da_rows_ i 0 __kit_
+				PATCH_IF "%__kit_%" STRING_EQUAL_CASE "THIEF" BEGIN
+				        FOR (j = 1; j < __backstab_2da_cols_; j += 1) BEGIN
+					        READ_2DA_ENTRY_FORMER __backstab_2da_rows_ i j __backstab_2da_for_swashies_
+						PATCH_IF j < (__backstab_2da_cols_ - 1) BEGIN
+						        SPRINT __backstab_2da_for_swashies_ EVAL "%__backstab_2da_for_swashies_% "
+						END
+						SPRINT __2da_for_no_stab_ EVAL "%__2da_for_no_stab_%%__backstab_2da_for_swashies_%"
+					END
+					i = __backstab_2da_rows_ + 1
+				END
+			END
+			INNER_PATCH_SAVE multikit_backstab "%__2da_for_no_stab_%" BEGIN
+			        REPLACE_TEXTUALLY ~2~ ~1~
+				REPLACE_TEXTUALLY ~3~ ~1~
+				REPLACE_TEXTUALLY ~4~ ~1~
+				REPLACE_TEXTUALLY ~5~ ~1~
+			END
+			SPRINT __2da_for_no_stab_ ""
+		BUT_ONLY
 	END
 	ACTION_IF FILE_CONTAINS_EVALUATED (thiefskl.2da "%kit2%") BEGIN
 		LAF 7c#get_row
@@ -203,6 +272,37 @@ END ELSE ACTION_IF $classes(2) STRING_EQUAL "THIEF" BEGIN
 			RET
 				multikit_crippstr = __desired_row_
 		END
+	END ELSE BEGIN
+	        COPY_EXISTING crippstr.2da override
+			SPRINT __2da_for_no_stab_ ""
+			SPRINT __crippstr_2da_for_swashies_ ""
+		        COUNT_2DA_COLS __crippstr_2da_cols_
+			READ_2DA_ENTRIES_NOW __crippstr_2da_rows_ __crippstr_2da_cols_
+			FOR (i = 0; i < __crippstr_2da_rows_; i += 1) BEGIN
+			        READ_2DA_ENTRY_FORMER __crippstr_2da_rows_ i 0 __kit_
+				PATCH_IF "%__kit_%" STRING_EQUAL_CASE "THIEF" BEGIN
+				        FOR (j = 1; j < __crippstr_2da_cols_; j += 1) BEGIN
+					        READ_2DA_ENTRY_FORMER __crippstr_2da_rows_ i j __crippstr_2da_for_swashies_
+						PATCH_IF j < (__crippstr_2da_cols_ - 1) BEGIN
+						        SPRINT __crippstr_2da_for_swashies_ EVAL "%__crippstr_2da_for_swashies_% "
+						END
+						SPRINT __2da_for_no_stab_ EVAL "%__2da_for_no_stab_%%__crippstr_2da_for_swashies_%"
+					END
+					i = __crippstr_2da_rows_ + 1
+				END
+			END
+			INNER_PATCH_SAVE multikit_crippstr "%__2da_for_no_stab_%" BEGIN
+			        REPLACE_TEXTUALLY ~2~ ~0~
+				REPLACE_TEXTUALLY ~3~ ~0~
+				REPLACE_TEXTUALLY ~4~ ~0~
+				REPLACE_TEXTUALLY ~5~ ~0~
+				REPLACE_TEXTUALLY ~6~ ~0~
+				REPLACE_TEXTUALLY ~7~ ~0~
+				REPLACE_TEXTUALLY ~8~ ~0~
+				REPLACE_TEXTUALLY ~9~ ~0~
+			END
+			SPRINT __2da_for_no_stab_ ""
+		BUT_ONLY
 	END
 	ACTION_IF FILE_CONTAINS_EVALUATED (sneakatt.2da "%kit2%") BEGIN
 		LAF 7c#get_row
@@ -212,12 +312,39 @@ END ELSE ACTION_IF $classes(2) STRING_EQUAL "THIEF" BEGIN
 			RET
 				multikit_sneakatt = __desired_row_
 		END
-	END
-	ACTION_IF !FILE_CONTAINS_EVALUATED (backstab.2da "%kit2%") AND
-		  !FILE_CONTAINS_EVALUATED (sneakatt.2da "%kit2%") AND
-		  !FILE_CONTAINS_EVALUATED (crippstr.2da "%kit2%")
-        BEGIN
-		OUTER_SET __kit_has_backstab_ = 0
+	END ELSE BEGIN
+	        COPY_EXISTING sneakatt.2da override
+			SPRINT __2da_for_no_stab_ ""
+			SPRINT __sneakatt_2da_for_swashies_ ""
+		        COUNT_2DA_COLS __sneakatt_2da_cols_
+			READ_2DA_ENTRIES_NOW __sneakatt_2da_rows_ __sneakatt_2da_cols_
+			FOR (i = 0; i < __sneakatt_2da_rows_; i += 1) BEGIN
+			        READ_2DA_ENTRY_FORMER __sneakatt_2da_rows_ i 0 __kit_
+				PATCH_IF "%__kit_%" STRING_EQUAL_CASE "THIEF" BEGIN
+				        FOR (j = 1; j < __sneakatt_2da_cols_; j += 1) BEGIN
+					        READ_2DA_ENTRY_FORMER __sneakatt_2da_rows_ i j __sneakatt_2da_for_swashies_
+						PATCH_IF j < (__sneakatt_2da_cols_ - 1) BEGIN
+						        SPRINT __sneakatt_2da_for_swashies_ EVAL "%__sneakatt_2da_for_swashies_% "
+						END
+						SPRINT __2da_for_no_stab_ EVAL "%__2da_for_no_stab_%%__sneakatt_2da_for_swashies_%"
+					END
+					i = __sneakatt_2da_rows_ + 1
+				END
+			END
+			INNER_PATCH_SAVE multikit_sneakatt "%__2da_for_no_stab_%" BEGIN
+			        REPLACE_TEXTUALLY ~2~ ~1~
+				REPLACE_TEXTUALLY ~3~ ~1~
+				REPLACE_TEXTUALLY ~4~ ~1~
+				REPLACE_TEXTUALLY ~5~ ~1~
+				REPLACE_TEXTUALLY ~6~ ~1~
+				REPLACE_TEXTUALLY ~7~ ~1~
+				REPLACE_TEXTUALLY ~8~ ~1~
+				REPLACE_TEXTUALLY ~9~ ~1~
+				REPLACE_TEXTUALLY ~10~ ~1~
+				REPLACE_TEXTUALLY ~11~ ~1~
+			END
+			SPRINT __2da_for_no_stab_ ""
+		BUT_ONLY
 	END
 END	  
 
@@ -227,61 +354,96 @@ ACTION_IF FILE_CONTAINS_EVALUATED (backstab.2da "%kit1%") && $classes(1) STRING_
 	OUTER_SET SELKATH_OR_SEKOLAH = 1 // yup, fish be stalkers 100% no fake 4 reals
 END
 
-COPY_EXISTING - clasthac.2da override
+COPY_EXISTING clasthac.2da override
 	COUNT_2DA_COLS daak_cols__
 	READ_2DA_ENTRIES_NOW __clasthac_cd daak_cols__ - 1
-	FOR (c__ = 0; c__ < daak_cols__ - 1; ++c__) BEGIN
-		READ_2DA_ENTRY_FORMER __clasthac_cd 0 c__ __kit_comp
+	FOR (c__ = 0; c__ < daak_cols__ - 1; c__ += 1) BEGIN
+		READ_2DA_ENTRY_FORMER __clasthac_cd 0 c__ comp_kit_
 		PATCH_IF "%comp_kit_%" STRING_EQUAL_CASE "%kit0%" BEGIN
-			READ_2DA_ENTRY_FORMER __clasthac_cd c__ 1 __kit0_entry
+			READ_2DA_ENTRY_FORMER __clasthac_cd 1 (c__ + 1) __kit0_clasthac_entry
 		END
 		PATCH_IF "%comp_kit_%" STRING_EQUAL_CASE "%kit1%" BEGIN
-			READ_2DA_ENTRY_FORMER __clasthac_cd c__ 2 __kit1_entry
+			READ_2DA_ENTRY_FORMER __clasthac_cd 1 (c__ + 1) __kit1_clasthac_entry
 		END
 		PATCH_IF "%kit2%" STR_CMP "" BEGIN
 			PATCH_IF "%comp_kit_%" STRING_EQUAL_CASE "%kit2%" BEGIN
-				READ_2DA_ENTRY_FORMER __clasthac_cd c__ 3 __kit2_entry
+				READ_2DA_ENTRY_FORMER __clasthac_cd 1 (c__ + 1) __kit2_clasthac_entry
 			END
 		END
 	END
+	PATCH_IF "%kit2%" STR_CMP "" BEGIN
+		LPF m7#max3
+			INT_VAR
+				n1 = __kit0_clasthac_entry
+				n2 = __kit1_clasthac_entry
+				n3 = __kit2_clasthac_entry
+	   		RET
+				__c7_clasthac_entry_ = maxval
+		END
+	END ELSE BEGIN
+	        __c7_clasthac_entry_ = __kit0_clasthac_entry > __kit1_clasthac_entry ? __kit0_clasthac_entry : __kit1_clasthac_entry
+	END
 BUT_ONLY
+
+OUTER_SPRINT multikit_clasthac "%__c7_clasthac_entry_%"
 
 OUTER_SET is_thief = 0
 
 ACTION_IF kitclassids = 13 || kitclassids = 15 || kitclassids = 10 || kitclassids = 18 || kitclassids = 9 BEGIN
 	OUTER_SET is_thief = 1
-	COPY_EXISTING - clasiskl.2da override
+	OUTER_SET pick_pockets_0 = 0
+	OUTER_SET open_locks_0 = 0
+	OUTER_SET find_traps_0 = 0
+	OUTER_SET move_silently_0 = 0
+	OUTER_SET hide_in_shadows_0 = 0
+	OUTER_SET detect_illusion_0 = 0
+	OUTER_SET set_traps_0 = 0
+	OUTER_SET pick_pockets_1 = 0
+	OUTER_SET open_locks_1 = 0
+	OUTER_SET find_traps_1 = 0
+	OUTER_SET move_silently_1 = 0
+	OUTER_SET hide_in_shadows_1 = 0
+	OUTER_SET detect_illusion_1 = 0
+	OUTER_SET set_traps_1 = 0
+	OUTER_SET pick_pockets_2 = 0
+	OUTER_SET open_locks_2 = 0
+	OUTER_SET find_traps_2 = 0
+	OUTER_SET move_silently_2 = 0
+	OUTER_SET hide_in_shadows_2 = 0
+	OUTER_SET detect_illusion_2 = 0
+	OUTER_SET set_traps_2 = 0
+	COPY_EXISTING clasiskl.2da override
 		COUNT_2DA_COLS __cols_daak
 		READ_2DA_ENTRIES_NOW __clasiskl_cd __cols_daak - 1
 		FOR (j__ = 0; j__ < __cols_daak - 1; ++j__) BEGIN
 			READ_2DA_ENTRY_FORMER __clasiskl_cd 0 j__ comp_kit_
-			PATCH_IF "%comp_kit_%" STRING_EQUAL_CASE "%kit0%" BEGIN
-				READ_2DA_ENTRY_FORMER __clasiskl_cd 1 j__ pick_pockets_0
-				READ_2DA_ENTRY_FORMER __clasiskl_cd 2 j__ open_locks_0
-				READ_2DA_ENTRY_FORMER __clasiskl_cd 3 j__ find_traps_0
-				READ_2DA_ENTRY_FORMER __clasiskl_cd 4 j__ move_silently_0
-				READ_2DA_ENTRY_FORMER __clasiskl_cd 5 j__ hide_in_shadows_0
-				READ_2DA_ENTRY_FORMER __clasiskl_cd 6 j__ detect_illusion_0
-				READ_2DA_ENTRY_FORMER __clasiskl_cd 7 j__ set_traps_0
+			PATCH_IF "%comp_kit_%" STRING_EQUAL_CASE "%kit0%" && FILE_CONTAINS_EVALUATED (clasiskl.2da "%kit0%") BEGIN
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 1 (j__ + 1) pick_pockets_0
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 2 (j__ + 1) open_locks_0
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 3 (j__ + 1) find_traps_0
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 4 (j__ + 1) move_silently_0
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 5 (j__ + 1) hide_in_shadows_0
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 6 (j__ + 1) detect_illusion_0
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 7 (j__ + 1) set_traps_0
 			END
-			PATCH_IF "%comp_kit_%" STRING_EQUAL_CASE "%kit1%" BEGIN
-				READ_2DA_ENTRY_FORMER __clasiskl_cd 1 j__ pick_pockets_1
-				READ_2DA_ENTRY_FORMER __clasiskl_cd 2 j__ open_locks_1
-				READ_2DA_ENTRY_FORMER __clasiskl_cd 3 j__ find_traps_1
-				READ_2DA_ENTRY_FORMER __clasiskl_cd 4 j__ move_silently_1
-				READ_2DA_ENTRY_FORMER __clasiskl_cd 5 j__ hide_in_shadows_1
-				READ_2DA_ENTRY_FORMER __clasiskl_cd 6 j__ detect_illusion_1
-				READ_2DA_ENTRY_FORMER __clasiskl_cd 7 j__ set_traps_1
+			PATCH_IF "%comp_kit_%" STRING_EQUAL_CASE "%kit1%" && FILE_CONTAINS_EVALUATED (clasiskl.2da "%kit1%") BEGIN
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 1 (j__ + 1) pick_pockets_1
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 2 (j__ + 1) open_locks_1
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 3 (j__ + 1) find_traps_1
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 4 (j__ + 1) move_silently_1
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 5 (j__ + 1) hide_in_shadows_1
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 6 (j__ + 1) detect_illusion_1
+				READ_2DA_ENTRY_FORMER __clasiskl_cd 7 (j__ + 1) set_traps_1
 			END
 			PATCH_IF $classes(2) STRING_EQUAL "THIEF" || $classes(2) STRING_EQUAL "CLERIC" BEGIN
-				PATCH_IF "%comp_kit_%" STRING_EQUAL_CASE "%kit2%" BEGIN
-					READ_2DA_ENTRY_FORMER __clasiskl_cd 1 j__ pick_pockets_2
-					READ_2DA_ENTRY_FORMER __clasiskl_cd 2 j__ open_locks_2
-					READ_2DA_ENTRY_FORMER __clasiskl_cd 3 j__ find_traps_2
-					READ_2DA_ENTRY_FORMER __clasiskl_cd 4 j__ move_silently_2
-					READ_2DA_ENTRY_FORMER __clasiskl_cd 5 j__ hide_in_shadows_2
-					READ_2DA_ENTRY_FORMER __clasiskl_cd 6 j__ detect_illusion_2
-					READ_2DA_ENTRY_FORMER __clasiskl_cd 7 j__ set_traps_2
+				PATCH_IF "%comp_kit_%" STRING_EQUAL_CASE "%kit2%" && FILE_CONTAINS_EVALUATED (clasiskl.2da "%kit2%") BEGIN
+					READ_2DA_ENTRY_FORMER __clasiskl_cd 1 (j__ + 1) pick_pockets_2
+					READ_2DA_ENTRY_FORMER __clasiskl_cd 2 (j__ + 1) open_locks_2
+					READ_2DA_ENTRY_FORMER __clasiskl_cd 3 (j__ + 1) find_traps_2
+					READ_2DA_ENTRY_FORMER __clasiskl_cd 4 (j__ + 1) move_silently_2
+					READ_2DA_ENTRY_FORMER __clasiskl_cd 5 (j__ + 1) hide_in_shadows_2
+					READ_2DA_ENTRY_FORMER __clasiskl_cd 6 (j__ + 1) detect_illusion_2
+					READ_2DA_ENTRY_FORMER __clasiskl_cd 7 (j__ + 1) set_traps_2
 				END
 			END
 		END
@@ -357,13 +519,13 @@ ACTION_IF kitclassids = 13 || kitclassids = 15 || kitclassids = 10 || kitclassid
 	END
 END
 
-OUTER_SPRINT multikit_clasiskl ~%pick_pockets% %open_locks% %find_traps% %move_silently% %hide_in_shadows% %detect_illusion% %set_traps%~
+OUTER_SPRINT multikit_clasiskl ~%pick_pockets% %open_locks% %find_traps% %move_silently% %hide_in_shadows% %detect_illusion% %set_traps%~ // 0~ dunno about the last 0 for Stealth, I'll see what happens. Edit: nope
 
 ACTION_IF FILE_CONTAINS_EVALUATED (clastext.2da "FALLEN_%kit0%") || FILE_CONTAINS_EVALUATED (clastext.2da "FALLEN_%kit1%") || FILE_CONTAINS_EVALUATED (clastext.2da "FALLEN_%kit2%") BEGIN
-	OUTER_SET multikit_fallen = RESOLVE_STR_REF (@1300040)
+	OUTER_SET multikit_fallen = 1
 	OUTER_SET multikit_fallen_notice = RESOLVE_STR_REF (@1300041)
 END ELSE BEGIN
-	OUTER_SET multikit_fallen = (0 - 2)
+	OUTER_SET multikit_fallen = 0
 	OUTER_SET multikit_fallen_notice = (0 - 2)
 END
 
@@ -441,7 +603,7 @@ LAF fl#add_kit_ee
 		traplimt = EVAL "%multikit_traplimt%"
 		sneakatt = EVAL "%multikit_sneakatt%"
 		clswpbon = EVAL "%multikit_clswpbon%"
-		crippstr = EVAL "%multikit_crppstr%"
+		crippstr = EVAL "%multikit_crippstr%"
 		clasthac = EVAL "%multikit_clasthac%"
 		clasiskl = EVAL "%multikit_clasiskl%"
 END

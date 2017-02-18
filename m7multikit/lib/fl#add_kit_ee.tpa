@@ -13,7 +13,9 @@
 
 // Edited 2016-12-04: No longer identifies M/Ts as non-Thieves.
 
-OUTER_SPRINT fl#add_kit_ee#version "v1.0.7 Multikit %m7version%"
+// 2017-02-17 Edit: Changed WARN for LOG, so if there's something *wrong* I get know, and if there's not, the user doesn't notice.
+
+OUTER_SPRINT fl#add_kit_ee#version "v1.0.8 Multikit %m7version%"
 
 DEFINE_ACTION_FUNCTION fl#add_kit_ee#get_row
   STR_VAR
@@ -156,7 +158,7 @@ BEGIN
 				    "%sneakatt%" STR_CMP "" OR
 				    "%crippstr%" STR_CMP "")
   BEGIN
-    WARN @1300037
+    LOG @1300037 // if I use WARN or PRINT and it triggers with whatever other non-Thief multikit like it already does, poor users will go mad
     OUTER_SPRINT backstab ""
     OUTER_SPRINT thiefskl ""
     OUTER_SPRINT traplimt ""
