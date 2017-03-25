@@ -2521,7 +2521,7 @@ STRING_LENGTH kitid == 0~
 		// HLA table to use; see LUABBR.2da
 		// Defaulting to the value set for the unkitted multiclass; this should
 		// be changed if a given multikit demands a custom HLA table.
-		~%kitclassluabbr%~
+		~__c7_replace_with_kitclassluabbr_~ // there was a bug... here's the fix
 		// list of starting equipment for PCs starting in ToB. Appended column-wise to 25STWEAP.2da
 		// It is not like you can start with a multikit anyway...
 		~* * * * * * * * * * * * * * * * * * * *~
@@ -2533,6 +2533,10 @@ STRING_LENGTH kitid == 0~
 	APPEND ~specific.ids~ ~%kitspec% SPEC_%kitid%~
 
 	CLEAR_IDS_MAP
+
+        COPY_EXISTING luabbr.2da override
+	        REPLACE_TEXTUALLY ~__c7_replace_with_kitclassluabbr_~ ~%kitclassluabbr%~
+	BUT_ONLY
 
 	ACTION_IF !ENGINE_IS tob BEGIN
 		REINCLUDE "%basepath%/lib/7c#ee_multikit.tph"
