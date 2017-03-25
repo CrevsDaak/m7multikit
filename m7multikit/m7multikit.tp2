@@ -36,12 +36,12 @@ BACKUP ~m7multikit/backup~
 
 AUTHOR ~http://www.shsforums.net/topic/45258-multiclassed-multikit-builder-mod-experimental/~
 
-VERSION ~v0.27.8~
+VERSION ~v0.27.9~
 
 ALWAYS
 	// Set this to the correct value for your mod.
 	OUTER_SPRINT "basepath"   ~./m7multikit~
-	OUTER_SPRINT m7version v0.27.8
+	OUTER_SPRINT m7version v0.27.9
 	OUTER_SET "defexplode" = 1
 	// In the form of a library for easy additions of multikits.
 	ACTION_INCLUDE ~%basepath%/lib/multikit.tpp~

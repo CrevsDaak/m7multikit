@@ -1,6 +1,6 @@
                              Baldur's Gate II
                         Multiclass Multikit Builder
-                              Version 0.27.8
+                              Version 0.27.9
 
 		Table of Contents
 		~~~~~~~~~~~~~~~~~
@@ -138,6 +138,8 @@ might have changed.
 
 		Section VI. Changelog
 		~~~~~~~~~~~~~~~~~~~~~
+Version 0.27.9:
+      * Fixed a bug that prevented multikits from getting their HLAs table.
 
 Version 0.27.8:
       * Numerous bugs for EE were fixed.
