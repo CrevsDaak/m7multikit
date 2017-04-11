@@ -1853,13 +1853,13 @@ STRING_LENGTH kitid == 0~
 			FOR ("%index%" = 0; "%index%" < "%rows%"; "%index%" += 1) BEGIN
 				// The default multiclass HLA table.
 				PATCH_IF ("%name%" STRING_EQUAL_CASE "%kitclass%") BEGIN
-					READ_2DA_ENTRY "%index%" 1 "%cols%" "kitclassluabbr"
+					READ_2DA_ENTRY "%index%" 1 "%cols%" kitclassluabbr
 				END
 			END
 		END
 		PATCH_IF ((STRING_LENGTH "hlafile") > 0) BEGIN
 			// We have a custom HLA table specified; use it instead.
-			PATCH_IF (FILE_EXISTS "%hlafile%") BEGIN
+			PATCH_IF (!FILE_EXISTS_IN_GAME "lu%hlafile%.2da") BEGIN
 				// We have a full path file for the luXXXXXX.2da file.
 				// Use it, but generate the final file name ourselves.
 				// Install the file.
@@ -1867,11 +1867,11 @@ STRING_LENGTH kitid == 0~
 					COPY "%hlafile%" ~override/lu%modprefix%%kitprefix%.2da~
 						PRETTY_PRINT_2DA
 				END
-				SPRINT "kitclassluabbr" "%modprefix%%kitprefix%"
-			END ELSE PATCH_IF (FILE_EXISTS_IN_GAME "lu%hlafile%.2da") BEGIN
+				SPRINT kitclassluabbr "%modprefix%%kitprefix%"
+			END ELSE BEGIN
 				// File already exists in game, and we got only the XXXXXX
 				// in luXXXXXX.2da; simply add it to luabbr.2da normally.
-				SPRINT "kitclassluabbr" "%hlafile%"
+				SPRINT kitclassluabbr "%hlafile%"
 			END
 		END
 
@@ -2521,7 +2521,7 @@ STRING_LENGTH kitid == 0~
 		// HLA table to use; see LUABBR.2da
 		// Defaulting to the value set for the unkitted multiclass; this should
 		// be changed if a given multikit demands a custom HLA table.
-		~__c7_replace_with_kitclassluabbr_~ // there was a bug... here's the fix
+		~%kitclassluabbr%~
 		// list of starting equipment for PCs starting in ToB. Appended column-wise to 25STWEAP.2da
 		// It is not like you can start with a multikit anyway...
 		~* * * * * * * * * * * * * * * * * * * *~
@@ -2533,10 +2533,6 @@ STRING_LENGTH kitid == 0~
 	APPEND ~specific.ids~ ~%kitspec% SPEC_%kitid%~
 
 	CLEAR_IDS_MAP
-
-        COPY_EXISTING luabbr.2da override
-	        REPLACE_TEXTUALLY ~__c7_replace_with_kitclassluabbr_~ ~%kitclassluabbr%~
-	BUT_ONLY
 
 	ACTION_IF !ENGINE_IS tob BEGIN
 		REINCLUDE "%basepath%/lib/7c#ee_multikit.tph"
