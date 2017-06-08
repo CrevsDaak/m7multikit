@@ -1106,7 +1106,12 @@ BEGIN
 			PATCH_IF (NOT (IS_AN_INT "%val%")) BEGIN
 				// Not an integer.
 				PATCH_PRINT @1300002
-			END ELSE PATCH_IF ("%val%" == 1) BEGIN
+			END
+			PATCH_IF GAME_IS bgee && val == 2 BEGIN
+				 PATCH_PRINT ~Sorry for the inconvenience, but Option 2 is unsupported in BG:EE and SoD. Your choice was changed to Option 1.~
+       	     	      	     	 SET val = 1
+			END
+			PATCH_IF ("%val%" == 1) BEGIN
 				// Flag loop as done.
 				SET "looping" = 0
 			END ELSE PATCH_IF ("%val%" == 2) BEGIN
@@ -1859,7 +1864,7 @@ STRING_LENGTH kitid == 0~
 		END
 		PATCH_IF ((STRING_LENGTH "hlafile") > 0) BEGIN
 			// We have a custom HLA table specified; use it instead.
-			PATCH_IF (!FILE_EXISTS_IN_GAME "lu%hlafile%.2da") BEGIN
+			PATCH_IF (FILE_EXISTS "%hlafile%") BEGIN // reverted in v0.27.11 from previous version
 				// We have a full path file for the luXXXXXX.2da file.
 				// Use it, but generate the final file name ourselves.
 				// Install the file.
