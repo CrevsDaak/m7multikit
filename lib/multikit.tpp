@@ -22,7 +22,7 @@
  *
  */
 
-/* Time-stamp: </Users/nico/BG_modding/m7multikit/m7multikit/lib/multikit.tpp, 2019-07-22 Monday 19:49:20 nico> */
+/* Time-stamp: </Users/nico/BG_modding/m7multikit/lib/multikit.tpp, 2019-07-23 Tuesday 00:07:40 nico> */
 
 /******************************************************************************
  *	
@@ -2589,6 +2589,12 @@ END
 			REPLACE ~scripdesc~ @1300010
 			PRETTY_PRINT_2DA
 		BUT_ONLY
+
+		ACTION_IF "%WEIDU_OS%" STR_CMP "WIN32" BEGIN
+		        AT_UNINSTALL ~rm -f scripts/%modprefix%%kitprefix%.bs~
+		END ELSE BEGIN /* honestly hope this works. no fucking clue about windows lol */
+		        AT_UNINSTALL ~del scripts/%modprefix%%kitprefix%.bs~
+		END
 	END
 	// Pretty-print them all.
 	COPY_EXISTING ~clasweap.2da~ ~override~
