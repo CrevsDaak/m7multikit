@@ -135,50 +135,50 @@ you're encouraged to try and report back any issue(s).
 		Section VI. Changelog
 		~~~~~~~~~~~~~~~~~~~~~
 Version 0.28:
-      * Multikits can now be chosen at character creation in EE.
-      * No longer lists fake Cleric kits when building Multikits in EE.
-      * Special thanks to aquadrizzt for letting me use parts of
-        his qdmulti library in this mod.
+        * Multikits can now be chosen at character creation in EE.
+        * No longer lists fake Cleric kits when building Multikits in EE.
+        * Special thanks to aquadrizzt for letting me use parts of
+          his qdmulti library in this mod.
 
 Version 0.27.11:
-      * Fixed the bug introduced in the previous version that prevented
-        the user from installing any multikits. Althought, yet another
-        bug might have been created in the process. I apologize in advance.
+        * Fixed the bug introduced in the previous version that prevented
+         the user from installing any multikits. Althought, yet another
+         bug might have been created in the process. I apologize in advance.
 
 Version 0.27.10:
-      * Finally fixed the bug with the HLAs table, but introduced a new one.
+        * Finally fixed the bug with the HLAs table, but introduced a new one.
 
 Version 0.27.9:
-       * Fixed a bug that prevented multikits from getting their HLAs table.
+        * Fixed a bug that prevented multikits from getting their HLAs table.
 
 Version 0.27.8:
-       * Numerous bugs for EE were fixed.
-       * Non-Generalist Mages now get their extra Spellslot per level
+        * Numerous bugs for EE were fixed.
+        * Non-Generalist Mages now get their extra Spellslot per level
          as they should.
-       * No longer fails to install due to an incorrect number of
+        * No longer fails to install due to an incorrect number of
          columns being appended to a clab file.
-       * Custom title selection enabled!
-       * Updated prompt about the Kit's internal name to warn the user of
+        * Custom title selection enabled!
+        * Updated prompt about the Kit's internal name to warn the user of
          using numbers as the first character of the name.
 
 Version 0.27.7:
-       * No longer gives false warnings with Mage/Thief multikits.
-       * Some multikits no longer fail to install in EE due to a mistake in the code.
+        * No longer gives false warnings with Mage/Thief multikits.
+        * Some multikits no longer fail to install in EE due to a mistake in the code.
 
 Version 0.27.6:
-       * No longer fails to install Mage multikits.
-       * Wild Mage's XP deduction now correctly calculated (it works now).
+        * No longer fails to install Mage multikits.
+        * Wild Mage's XP deduction now correctly calculated (it works now).
 
 Version 0.27.5:
-       * Installation no longer fails due to a syntax error because
-         I'm bad with git.
+        * Installation no longer fails due to a syntax error because
+          I'm bad with git.
 
 Version 0.27.4:
-       * Fixed a bug that caused Wild Mages to get the incorrect amount
-         of XP drained to compensate the special Wild Mage spells' XP
-	 reward, which caused a great XP loss and if the character
-	 had less than 10,000 XP it would make them reach level 40 on
-	 every class.
+        * Fixed a bug that caused Wild Mages to get the incorrect amount
+          of XP drained to compensate the special Wild Mage spells' XP
+	  reward, which caused a great XP loss and if the character
+	  had less than 10,000 XP it would make them reach level 40 on
+	  every class.
 	* Updated to WeiDU 240.
 	* Added SoD compatibility.
 
@@ -285,4 +285,3 @@ Version 0.11:
 
 Version 0.10:
         * Initial public release.
-
