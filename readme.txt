@@ -142,8 +142,8 @@ Version 0.28:
 
 Version 0.27.11:
         * Fixed the bug introduced in the previous version that prevented
-         the user from installing any multikits. Althought, yet another
-         bug might have been created in the process. I apologize in advance.
+          the user from installing any multikits. Althought, yet another
+          bug might have been created in the process. I apologize in advance.
 
 Version 0.27.10:
         * Finally fixed the bug with the HLAs table, but introduced a new one.
@@ -154,12 +154,12 @@ Version 0.27.9:
 Version 0.27.8:
         * Numerous bugs for EE were fixed.
         * Non-Generalist Mages now get their extra Spellslot per level
-         as they should.
+          as they should.
         * No longer fails to install due to an incorrect number of
-         columns being appended to a clab file.
+          columns being appended to a clab file.
         * Custom title selection enabled!
         * Updated prompt about the Kit's internal name to warn the user of
-         using numbers as the first character of the name.
+          using numbers as the first character of the name.
 
 Version 0.27.7:
         * No longer gives false warnings with Mage/Thief multikits.
