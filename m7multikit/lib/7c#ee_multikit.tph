@@ -27,7 +27,7 @@
  *	This is in the form of a library file for easier use in other mods.
  *
  *	Created by Nicolas C. aka Crevs Daak on 2014-12-08.
- *	Last edited on 2017-02-17.
+ *	Time-stamp: </Users/nico/BG_modding/m7multikit/m7multikit/lib/7c#ee_multikit.tph, 2019-07-22 Monday 19:05:46 nico>
  *
  *	Supporting file for the Multikit mod.
  *
@@ -35,49 +35,19 @@
  *
  */
 
-OUTER_SPRINT "7c#ee_multikit_version" "v1.0.4 Multikit %m7version%"
+OUTER_SPRINT "7c#ee_multikit_version" "v1.0.5 Multikit %m7version%"
 INCLUDE "%basepath%/lib/fl#add_kit_ee.tpa"
-
-DEFINE_ACTION_FUNCTION 7c#get_row
-	STR_VAR
-		the_one_thief_kit = ""
-		file = ""
-
-	RET
-		__desired_row_
-BEGIN
-	COPY_EXISTING - "%file%.2da" override
-		SPRINT 7c#_7c#get_placeholder ""
-		SPRINT __desired_row_ "BUG"
-		COUNT_2DA_COLS 7c_7c_num_col
-		READ_2DA_ENTRIES_NOW __new_var_w_no_name_ 7c_7c_num_col
-		FOR (i = 0; i < __new_var_w_no_name_; ++i) BEGIN
-			READ_2DA_ENTRY_FORMER __new_var_w_no_name_ i 0 the_one_entry
-			PATCH_IF "%the_one_entry%" STRING_EQUAL_CASE "%the_one_thief_kit%" BEGIN
-				FOR (j = 1; j < 7c_7c_num_col; ++j) BEGIN
-					READ_2DA_ENTRY_FORMER __new_var_w_no_name_ i j 7c_place_holder
-					PATCH_IF j < (7c_7c_num_col - 1) BEGIN
-						SPRINT 7c_place_holder EVAL "%7c_place_holder% "
-					END
-					SPRINT 7c#_7c#get_placeholder EVAL "%7c#_7c#get_placeholder%%7c_place_holder%"
-				END
-				SPRINT __desired_row_ "%7c#_7c#get_placeholder%"
-				i = __new_var_w_no_name_ + 1
-			END
-		END
-	BUT_ONLY
-END
 
 OUTER_SET __kit_has_backstab_ = 1
 	
 ACTION_IF $classes(1) STRING_EQUAL "THIEF" || ($classes(1) STRING_EQUAL "RANGER" && FILE_CONTAINS_EVALUATED (backstab.2da "%kit1%")) BEGIN
 	ACTION_IF FILE_CONTAINS_EVALUATED (backstab.2da "%kit1%") BEGIN
-		LAF 7c#get_row
+		LAF fl#add_kit_ee#get_row
 			STR_VAR
-				the_one_thief_kit = EVAL "%kit1%"
+				row_name = EVAL "%kit1%"
 				file = backstab
 			RET
-				multikit_backstab = __desired_row_
+				multikit_backstab = row
 		END
 	END ELSE BEGIN
 	        // find out WHAT THE FUCK is going on here
@@ -110,30 +80,30 @@ ACTION_IF $classes(1) STRING_EQUAL "THIEF" || ($classes(1) STRING_EQUAL "RANGER"
 		BUT_ONLY
 	END
 	ACTION_IF FILE_CONTAINS_EVALUATED (thiefskl.2da "%kit1%") BEGIN
-		LAF 7c#get_row
+		LAF fl#add_kit_ee#get_row
 			STR_VAR
-				the_one_thief_kit = EVAL "%kit1%"
+				row_name = EVAL "%kit1%"
 				file = thiefskl
 			RET
-				multikit_thiefskl = __desired_row_
+				multikit_thiefskl = row
 		END
 	END
 	ACTION_IF FILE_CONTAINS_EVALUATED (traplimt.2da "%kit1%") BEGIN
-		LAF 7c#get_row
+		LAF fl#add_kit_ee#get_row
 			STR_VAR
-				the_one_thief_kit = EVAL "%kit1%"
+				row_name = EVAL "%kit1%"
 				file = traplimt
 			RET
-				multikit_traplimt = __desired_row_
+				multikit_traplimt = row
 		END
 	END
 	ACTION_IF FILE_CONTAINS_EVALUATED (crippstr.2da "%kit1%") BEGIN
-		LAF 7c#get_row
+		LAF fl#add_kit_ee#get_row
 			STR_VAR
-				the_one_thief_kit = EVAL "%kit1%"
+				row_name = EVAL "%kit1%"
 				file = crippstr
 			RET
-				multikit_crippstr = __desired_row_
+				multikit_crippstr = row
 		END
 	END ELSE BEGIN
 	        COPY_EXISTING crippstr.2da override
@@ -168,12 +138,12 @@ ACTION_IF $classes(1) STRING_EQUAL "THIEF" || ($classes(1) STRING_EQUAL "RANGER"
 		BUT_ONLY
 	END
 	ACTION_IF FILE_CONTAINS_EVALUATED (sneakatt.2da "%kit1%") BEGIN
-		LAF 7c#get_row
+		LAF fl#add_kit_ee#get_row
 			STR_VAR
-				the_one_thief_kit = EVAL "%kit1%"
+				row_name = EVAL "%kit1%"
 				file = sneakatt
 			RET
-				multikit_sneakatt = __desired_row_
+				multikit_sneakatt = row
 		END
 	END ELSE BEGIN
 	        COPY_EXISTING sneakatt.2da override
@@ -211,12 +181,12 @@ ACTION_IF $classes(1) STRING_EQUAL "THIEF" || ($classes(1) STRING_EQUAL "RANGER"
 	END
 END ELSE ACTION_IF $classes(2) STRING_EQUAL "THIEF" BEGIN
 	ACTION_IF FILE_CONTAINS_EVALUATED (backstab.2da "%kit2%") BEGIN
-		LAF 7c#get_row
+		LAF fl#add_kit_ee#get_row
 			STR_VAR
-				the_one_thief_kit = EVAL "%kit2%"
+				row_name = EVAL "%kit2%"
 				file = backstab
 			RET
-				multikit_backstab = __desired_row_
+				multikit_backstab = row
 		END
 	END ELSE BEGIN
 	        COPY_EXISTING backstab.2da override
@@ -247,30 +217,30 @@ END ELSE ACTION_IF $classes(2) STRING_EQUAL "THIEF" BEGIN
 		BUT_ONLY
 	END
 	ACTION_IF FILE_CONTAINS_EVALUATED (thiefskl.2da "%kit2%") BEGIN
-		LAF 7c#get_row
+		LAF fl#add_kit_ee#get_row
 			STR_VAR
-				the_one_thief_kit = EVAL "%kit2%"
+				row_name = EVAL "%kit2%"
 				file = thiefskl
 			RET
-				multikit_thiefskl = __desired_row_
+				multikit_thiefskl = row
 		END
 	END
 	ACTION_IF FILE_CONTAINS_EVALUATED (traplimt.2da "%kit2%") BEGIN
-		LAF 7c#get_row
+		LAF fl#add_kit_ee#get_row
 			STR_VAR
-				the_one_thief_kit = EVAL "%kit2%"
+				row_name = EVAL "%kit2%"
 				file = traplimt
 			RET
-				multikit_traplimt = __desired_row_
+				multikit_traplimt = row
 		END
 	END
 	ACTION_IF FILE_CONTAINS_EVALUATED (crippstr.2da "%kit2%") BEGIN
-		LAF 7c#get_row
+		LAF fl#add_kit_ee#get_row
 			STR_VAR
-				the_one_thief_kit = EVAL "%kit2%"
+				row_name = EVAL "%kit2%"
 				file = crippstr
 			RET
-				multikit_crippstr = __desired_row_
+				multikit_crippstr = row
 		END
 	END ELSE BEGIN
 	        COPY_EXISTING crippstr.2da override
@@ -305,12 +275,12 @@ END ELSE ACTION_IF $classes(2) STRING_EQUAL "THIEF" BEGIN
 		BUT_ONLY
 	END
 	ACTION_IF FILE_CONTAINS_EVALUATED (sneakatt.2da "%kit2%") BEGIN
-		LAF 7c#get_row
+		LAF fl#add_kit_ee#get_row
 			STR_VAR
-				the_one_thief_kit = EVAL "%kit2%"
+				row_name = EVAL "%kit2%"
 				file = sneakatt
 			RET
-				multikit_sneakatt = __desired_row_
+				multikit_sneakatt = row
 		END
 	END ELSE BEGIN
 	        COPY_EXISTING sneakatt.2da override
@@ -349,7 +319,7 @@ END ELSE ACTION_IF $classes(2) STRING_EQUAL "THIEF" BEGIN
 END	  
 
 OUTER_SET SELKATH_OR_SEKOLAH = 0
-
+/* should also track custom kits that give backstab to other classes */
 ACTION_IF FILE_CONTAINS_EVALUATED (backstab.2da "%kit1%") && $classes(1) STRING_EQUAL "RANGER" BEGIN
 	OUTER_SET SELKATH_OR_SEKOLAH = 1 // yup, fish be stalkers 100% no fake 4 reals
 END
@@ -447,6 +417,7 @@ ACTION_IF kitclassids = 13 || kitclassids = 15 || kitclassids = 10 || kitclassid
 				END
 			END
 		END
+	BUT_ONLY
 
 	ACTION_IF $classes(2) STRING_EQUAL "THIEF" BEGIN
 		OUTER_PATCH thieving_skills BEGIN
@@ -607,5 +578,91 @@ LAF fl#add_kit_ee
 		clasthac = EVAL "%multikit_clasthac%"
 		clasiskl = EVAL "%multikit_clasiskl%"
 END
+
+ACTION_MATCH "%kitclassids%" WITH
+        7 BEGIN
+	        OUTER_SPRINT __c7__kittable__class ~FM~
+	END
+	8 BEGIN
+	        OUTER_SPRINT __c7__kittable__class ~FC~
+	END
+	9 BEGIN
+	        OUTER_SPRINT __c7__kittable__class ~FT~
+	END
+	10 BEGIN
+	        OUTER_SPRINT __c7__kittable__class ~FMT~
+	END
+	13 BEGIN
+	        OUTER_SPRINT __c7__kittable__class ~MT~
+	END
+	14 BEGIN
+	        OUTER_SPRINT __c7__kittable__class ~CM~
+	END
+	15 BEGIN
+	        OUTER_SPRINT __c7__kittable__class ~CT~
+	END
+	16 BEGIN
+	        OUTER_SPRINT __c7__kittable__class ~FD~
+	END
+	17 BEGIN
+	        OUTER_SPRINT __c7__kittable__class ~FMC~
+	END
+	18 BEGIN
+	        OUTER_SPRINT __c7__kittable__class ~CR~
+	END
+	DEFAULT
+		FAIL @1300045
+END
+
+COPY_EXISTING kitlist.2da override
+        READ_2DA_ENTRIES_NOW __c7__kitlist__read 10
+	/* ours should be the last but read everything anyway */
+	FOR (i = 1; i < __c7__kitlist__read; i = i + 1) BEGIN
+	        READ_2DA_ENTRY_FORMER __c7__kitlist__read i 1 __c7__kitlist__kit__name
+		PATCH_IF "%kitid%" STR_EQ "%__c7__kitlist__kit__name%" BEGIN
+		        READ_2DA_ENTRY_FORMER __c7__kitlist__read i 0 __c7__kitlist
+			i = __c7__kitlist__read + 1
+		END
+	END
+BUT_ONLY
+/* from aquadrizzt's multiclass kit lib, lots of thanks */
+<<<<<<<< qd_blank_k_x_x_inline.2da
+2DA  V1.0
+*
+                    KIT
+1    0
+>>>>>>>>
+
+ACTION_FOR_EACH __c7__kittable__race IN ~H~ ~D~ ~G~ ~E~ ~HE~ ~HL~ ~HO~ BEGIN 
+        ACTION_IF NOT FILE_EXISTS_IN_GAME ~K_%__c7__kittable__class%_%__c7__kittable__race%.2da~ BEGIN
+                COPY ~qd_blank_k_x_x_inline.2da~ ~override/K_%__c7__kittable__class%_%__c7__kittable__race%.2da~
+		        INSERT_2DA_ROW 2 2 ~2    %__c7__kitlist%~
+        END ELSE BEGIN
+	        COPY_EXISTING "K_%__c7__kittable__class%_%__c7__kittable__race%.2da" override
+		        COUNT_2DA_ROWS 2 __c7__kittable__read__rows
+	        BUT_ONLY
+	        APPEND "K_%__c7__kittable__class%_%__c7__kittable__race%.2da" ~%__c7__kittable__read__rows%    %__c7__kitlist%~
+	END
+END
+
+OUTER_SET __c7__kit__ids = IDS_OF_SYMBOL(~KIT~ ~%kitid%~)
+
+COPY_EXISTING_REGEXP GLOB ~^m7.+\.spl$~ override
+        PATCH_IF ("%SOURCE_SIZE%" >= 0x72) BEGIN
+                GET_OFFSET_ARRAY ab_array SPL_V10_HEADERS
+                PHP_EACH ab_array AS int => ab_off BEGIN
+                        GET_OFFSET_ARRAY2 fx_array ab_off ITM_V10_HEAD_EFFECTS
+                        PHP_EACH fx_array AS int => fx_off BEGIN
+                                READ_SHORT fx_off fx_op
+			        READ_LONG (fx_off+0x4) fx_par1
+			        READ_LONG (fx_off+0x8) fx_par2
+                                PATCH_IF fx_op == 177 && fx_par1 == "%kitspec%" && fx_par2 == 6 BEGIN
+                                        WRITE_LONG (fx_off+0x4) "%__c7__kit__ids%"
+				        WRITE_LONG (fx_off+0x8) 9
+                                END
+                        END
+                END
+	END
+BUT_ONLY
 
 // eof

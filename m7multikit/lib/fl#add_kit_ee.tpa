@@ -22,10 +22,11 @@ DEFINE_ACTION_FUNCTION fl#add_kit_ee#get_row
     file = ""
     row_name = ""
     column = 0
+    __c7__extension = "2da"
   RET
     row
 BEGIN
-  COPY_EXISTING "%file%.2da" override
+  COPY_EXISTING "%file%.%__c7__extension%" override
     COUNT_2DA_COLS num_col
     READ_2DA_ENTRIES_NOW file num_col
     SPRINT row ""
@@ -158,7 +159,7 @@ BEGIN
 				    "%sneakatt%" STR_CMP "" OR
 				    "%crippstr%" STR_CMP "")
   BEGIN
-    LOG @1300037 // if I use WARN or PRINT and it triggers with whatever other non-Thief multikit like it already does, poor users will go mad
+    PRINT @1300037 // if I use WARN or PRINT and it triggers with whatever other non-Thief multikit like it already does, poor users will go mad
     OUTER_SPRINT backstab ""
     OUTER_SPRINT thiefskl ""
     OUTER_SPRINT traplimt ""

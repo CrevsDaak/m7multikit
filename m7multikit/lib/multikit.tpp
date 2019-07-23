@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2010-2011 FlameWing
- * Copyright (C) 2015-2017 CrevsDaak
+ * Copyright (C) 2015-2019 CrevsDaak
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,13 +22,14 @@
  *
  */
 
+/* Time-stamp: </Users/nico/BG_modding/m7multikit/m7multikit/lib/multikit.tpp, 2019-07-22 Monday 19:49:20 nico> */
 
 /******************************************************************************
  *	
  *	This is in the form of a library file for easier use in other mods.
  *	
  *	You must copy several entries from the tra file for this library to work
- *	correctly. The entries to copy are: @1300000 to @1300030
+ *	correctly. The entries to copy are: @1300000 to @1300045
  *	
  *	You are free to use this file as long as due credit is given.
  *	
@@ -999,7 +1000,7 @@ BEGIN
                     					~%name%~ STR_CMP ~barbtF~ &&
                     					~%name%~ STR_CMP ~barbtwF~ &&
 							~%name%~ STR_CMP ~YRKENSAI~ &&
-							~%name~ STR_CMP ~m#ambkit~ &&
+							~%name%~ STR_CMP ~m#ambkit~ &&
 							~%name%~ STR_CMP ~A!ADVENTURERtf~ &&
 							~%name%~ STR_CMP ~A!ADVENTURERtw~ &&
 							~%name%~ STR_CMP ~A!BURGLARtf~ &&
@@ -1011,7 +1012,11 @@ BEGIN
 							~%name%~ STR_CMP ~A#SHADOWDANCERtf~ &&
 							~%name%~ STR_CMP ~A#SHADOWDANCERtw~ &&
 							~%name%~ STR_CMP ~A!SHADOWDANCERtw~ &&
-							~%name%~ STR_CMP ~A!SHADOWDANCERtf~
+							~%name%~ STR_CMP ~A!SHADOWDANCERtf~ &&
+							~%name%~ STR_CMP ~OHTYR_OLD~ &&
+							~%name%~ STR_CMP ~FAKIE~ &&
+							~%name%~ STR_CMP ~GRIZZLY_BEAR~
+
 						BEGIN
 							SPRINT $kitlist("%kitcnt%") "%name%"
 							// Mixed name.
@@ -1062,7 +1067,7 @@ BEGIN
 		// The kit internal identifier, used, e.g., in kit.ids.
 		SPRINT "kitid" ""
 		SET "len" = STRING_LENGTH "%kitid%"
-		WHILE ("%len%" == 0) BEGIN
+		WHILE ("%len%" < 5) BEGIN
 			PATCH_PRINT @1300009
 			PATCH_READLN "kitid"
 			SET "len" = STRING_LENGTH "%kitid%"
@@ -1108,7 +1113,7 @@ BEGIN
 				PATCH_PRINT @1300002
 			END
 			PATCH_IF GAME_IS bgee && val == 2 BEGIN
-				 PATCH_PRINT ~Sorry for the inconvenience, but Option 2 is unsupported in BG:EE and SoD. Your choice was changed to Option 1.~
+				 PATCH_PRINT @1300046
        	     	      	     	 SET val = 1
 			END
 			PATCH_IF ("%val%" == 1) BEGIN
@@ -2496,7 +2501,8 @@ STRING_LENGTH kitid == 0~
 	OUTER_SPRINT "abdcscrq" $abrqrows(2)
 
 	LAUNCH_ACTION_FUNCTION ~m7#int_to_hex_str~ INT_VAR "number" = "%unusability%" RET "unusstr" = "hexstr" END
-	
+	PRINT ~%mixname% %lowname%~
+	PRINT ~%descript%~
 	ADD_KIT ~%kitid%~
 		// appended to CLASWEAP.2da; does it even matter in BG2????
 		~%kitid% 1 1 1 1 1 1 1 1~
@@ -2535,14 +2541,17 @@ STRING_LENGTH kitid == 0~
 		SAY "%mixname%"
 		SAY "%descript%"
 
-	APPEND ~specific.ids~ ~%kitspec% SPEC_%kitid%~
+	ACTION_IF ENGINE_IS tob BEGIN
+	        APPEND ~specific.ids~ ~%kitspec% SPEC_%kitid%~
+	END
 
 	CLEAR_IDS_MAP
 
 	ACTION_IF !ENGINE_IS tob BEGIN
-		REINCLUDE "%basepath%/lib/7c#ee_multikit.tph"
+		INCLUDE "%basepath%/lib/7c#ee_multikit.tph"
 	END
 
+	ACTION_IF ENGINE_IS tob BEGIN
 	// The kit changer script.
 <<<<<<<< ../m7multikit-inlined/multikit.baf
 IF
@@ -2567,20 +2576,20 @@ END
 >>>>>>>>
 
 	// Compile it.
-	COPY ~../m7multikit-inlined/multikit.baf~ ~scripts/%modprefix%%kitprefix%.bs~
-		EVAL
-		COMPILE_BAF_TO_BCS
+		COPY ~../m7multikit-inlined/multikit.baf~ ~scripts/%modprefix%%kitprefix%.bs~
+			EVAL
+			COMPILE_BAF_TO_BCS
 
-	// Name and description for the script.
-	APPEND ~scrpdesc.2da~ ~%modprefix%%kitprefix% scripname scripdesc~
+		// Name and description for the script.
+		APPEND ~scrpdesc.2da~ ~%modprefix%%kitprefix% scripname scripdesc~
 
-	// Replace name and description with the correct values.
-	COPY_EXISTING ~scrpdesc.2da~ ~override~
-		REPLACE ~scripname~ ~%mixname%~
-		REPLACE ~scripdesc~ @1300010
-		PRETTY_PRINT_2DA
+		// Replace name and description with the correct values.
+		COPY_EXISTING ~scrpdesc.2da~ ~override~
+		        REPLACE ~scripname~ ~%mixname%~
+			REPLACE ~scripdesc~ @1300010
+			PRETTY_PRINT_2DA
 		BUT_ONLY
-
+	END
 	// Pretty-print them all.
 	COPY_EXISTING ~clasweap.2da~ ~override~
 		          ~weapprof.2da~ ~override~
@@ -2592,19 +2601,22 @@ END
 		          ~dualclas.2da~ ~override~
 		          ~kitlist.2da~  ~override~
 		PRETTY_PRINT_2DA
-		BUT_ONLY
+	BUT_ONLY
 
 	// Working around a bug regarding variables in WeiDU AddKit.
+	// I wonder if this still applies...
 	COPY_EXISTING ~25stweap.2da~ ~override~
 		SPRINT "buff" "kitid"
 		REPLACE_TEXTUALLY CASE_INSENSITIVE EXACT_MATCH "%%buff%%" "%kitid%"
 		PRETTY_PRINT_2DA
-		BUT_ONLY
+	BUT_ONLY
 
-	OUTER_SPRINT "prompt" @1300011
-	OUTER_PATCH_SAVE "prompt2" "%prompt%" BEGIN
-		REPLACE_TEXTUALLY EXACT_MATCH "<SCRIPTNAME>" "%mixname%"
+	ACTION_IF ENGINE_IS tob BEGIN
+		OUTER_SPRINT "prompt" @1300011
+		OUTER_PATCH_SAVE "prompt2" "%prompt%" BEGIN
+			REPLACE_TEXTUALLY EXACT_MATCH "<SCRIPTNAME>" "%mixname%"
+		END
+
+		PRINT ~%prompt2%~
 	END
-
-	PRINT ~%prompt2%~
 END
