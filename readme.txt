@@ -49,7 +49,10 @@ so you should be safe in most scenarios.
 Unzip the main ZIP file into your BGII main directory. This is normally:
         C:\Program Files\Black Isle\BGII - SoA\
 
-Run (click on) "setup-m7multikit.exe". 
+This mod doesn't contain the executable required to be installed. You can get a
+copy at https://github.com/WeiDUorg/weidu/releases.
+After you've downloaded that, rename "weidu.exe" into "setup-m7multikit.exe" and
+run (click on) that.
 
 First, pick your favorite language. Currently available: 
   English 
