@@ -149,51 +149,55 @@ BEGIN @1300032 DESIGNATED 10 REQUIRE_PREDICATE (MOD_IS_INSTALLED ~setup-bg2fixpa
 
 	// Go through spells learnable through scrolls.
 	ACTION_PHP_EACH "ablist" AS "idx" => "spell" BEGIN
-		COPY_EXISTING ~%spell%.spl~ ~override~
-			PATCH_IF ("%SOURCE_SIZE%" >= 0x72) BEGIN	// Guard against 0-byte files.
-				PATCH_TRY
-					READ_SHORT 0x1c "type"
-					// Sanity check: want only wizard spells.
-					PATCH_IF ("%type%" == 1) BEGIN
-						// Exclusion flags.
-						READ_SHORT 0x1e "excl"
-						// Save the resource name here.
-						SPRINT "splfile" "%SOURCE_RES%"
-						// Check each flag in the array we built earlier.
-						PHP_EACH "excl_flags" AS "id" => "flag" BEGIN
-							PATCH_IF (("%excl%" & "%flag%") != 0) BEGIN
-								// Can't use this spell; so we add a remove spell
-								// effect to the corresponding spell.
-								INNER_ACTION BEGIN
-									COPY_EXISTING ~m7mkwsp%id%.spl~ ~override~
-										// Add the 'remove spell' effect.
-										SET opcode = "172"
-										SET target = "1"
-										SET power = "0"
-										SET parameter1 = "0"
-										SET parameter2 = "0"
-										SET timing = "1"
-										SET resist_dispel = "0"
-										SET duration = "0"
-										SET probability1 = "100"
-										SET probability2 = "0"
-										SNPRINT 8 ~resource~ "%splfile%"
-										SET dicenumber = "0"
-										SET dicesize = "0"
-										SET savingthrow = "0"
-										SET savebonus = "0"
-										SET header = "0"
-										LAUNCH_PATCH_MACRO ~ADD_SPELL_EFFECT~
+		ACTION_IF !FILE_EXISTS_IN_GAME ~%spell%.spl~ BEGIN
+			WARN @1300047
+		END ELSE BEGIN
+			COPY_EXISTING ~%spell%.spl~ ~override~
+				PATCH_IF ("%SOURCE_SIZE%" >= 0x72) BEGIN	// Guard against 0-byte files.
+					PATCH_TRY
+						READ_SHORT 0x1c "type"
+						// Sanity check: want only wizard spells.
+						PATCH_IF ("%type%" == 1) BEGIN
+							// Exclusion flags.
+							READ_SHORT 0x1e "excl"
+							// Save the resource name here.
+							SPRINT "splfile" "%SOURCE_RES%"
+							// Check each flag in the array we built earlier.
+							PHP_EACH "excl_flags" AS "id" => "flag" BEGIN
+								PATCH_IF (("%excl%" & "%flag%") != 0) BEGIN
+									// Can't use this spell; so we add a remove spell
+									// effect to the corresponding spell.
+									INNER_ACTION BEGIN
+										COPY_EXISTING ~m7mkwsp%id%.spl~ ~override~
+											// Add the 'remove spell' effect.
+											SET opcode = "172"
+											SET target = "1"
+											SET power = "0"
+											SET parameter1 = "0"
+											SET parameter2 = "0"
+											SET timing = "1"
+											SET resist_dispel = "0"
+											SET duration = "0"
+											SET probability1 = "100"
+											SET probability2 = "0"
+											SNPRINT 8 ~resource~ "%splfile%"
+											SET dicenumber = "0"
+											SET dicesize = "0"
+											SET savingthrow = "0"
+											SET savebonus = "0"
+											SET header = "0"
+											LAUNCH_PATCH_MACRO ~ADD_SPELL_EFFECT~
+									END
 								END
 							END
 						END
+					WITH
+						DEFAULT
+							PATCH_PRINT @1300035
 					END
-				WITH
-					DEFAULT
-						PATCH_PRINT @1300035
 				END
-			END
 			BUT_ONLY_IF_IT_CHANGES
+		END
 	END
 
 
