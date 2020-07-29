@@ -66,6 +66,7 @@ Note: deleting a multikit this way will also uninstall it.~
 @1300044 = ~WARNING: the HLA %ability%.spl referenced in %file% is inexistent~
 @1300045 = ~ERROR: class %kitclassids% not found~
 @1300046 = ~Sorry for the inconvenience, but Option 2 is unsupported in BG:EE and SoD. Your choice was changed to Option 1.~
+@1300047 = ~WARNING: Missing resource %spell%.spl! Skipping!~
 
 @-1004 = ~PLEASE post the file~
 @-1005 = ~on~
