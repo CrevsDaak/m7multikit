@@ -50,26 +50,34 @@ BEGIN
 		~0~ ~1~ ~2~ ~3~ ~4~ ~5~ ~6~ ~7~ ~8~ ~9~
 		~a~ ~b~ ~c~ ~d~ ~e~ ~f~
 	END
-	ACTION_IF ("%number%" == 0) BEGIN
-		OUTER_SPRINT "hexstr" "0x00000000"
-	END ELSE BEGIN
-		OUTER_SPRINT "sign" ""
-		OUTER_SET "num" = "%number%"
-		ACTION_IF ("%num%" < 0) BEGIN
-			OUTER_SPRINT "sign" "-"
-			OUTER_SET "num" = 0 - "%num%"
+	ACTION_MATCH number
+	WITH
+		0
+		BEGIN
+			OUTER_SPRINT "hexstr" "0x00000000"
 		END
-		OUTER_SPRINT "hexstr" ""
-		OUTER_WHILE ("%num%" > 0) BEGIN
-			OUTER_SET "digit" = ("%num%" & 15)
-			OUTER_SET "%num%" >>= 4
-			OUTER_SPRINT "hexdigit" $hexdigits("%digit%")
-			OUTER_SPRINT "hexstr" "%hexdigit%%hexstr%"
+		0xFFFFFFFF BEGIN
+			OUTER_SPRINT "hexstr" "0xFFFFFFFF"
 		END
-		OUTER_WHILE ((STRING_LENGTH "%hexstr%") < 8) BEGIN
-			OUTER_SPRINT "hexstr" "0%hexstr%"
-		END
-		OUTER_SPRINT "hexstr" "%sign%0x%hexstr%"
+		DEFAULT
+			OUTER_SET "num" = "%number%"
+			ACTION_IF ("%num%" < 0) BEGIN
+				OUTER_SET "absolute" = 0 - num
+				OUTER_SET "one_complement" = BNOT absolute
+				OUTER_SET "two_complement" = one_complement + 1
+				OUTER_SET "num" = two_complement
+			END
+			OUTER_SPRINT "hexstr" ""
+			OUTER_WHILE ("%num%" != 0) BEGIN
+				OUTER_SET "digit" = ("%num%" & 15)
+				OUTER_SET "%num%" >>= 4
+				OUTER_SPRINT "hexdigit" $hexdigits("%digit%")
+				OUTER_SPRINT "hexstr" "%hexdigit%%hexstr%"
+			END
+			OUTER_WHILE ((STRING_LENGTH "%hexstr%") < 8) BEGIN
+				OUTER_SPRINT "hexstr" "0%hexstr%"
+			END
+			OUTER_SPRINT "hexstr" "0x%hexstr%"
 	END
 END 
 
@@ -1935,7 +1943,7 @@ STRING_LENGTH kitid == 0~
 		ACTION_IF !ENGINE_IS tob BEGIN
 			COPY_EXISTING - xpbonus.2da override
 				COUNT_2DA_COLS colsn
-			    	READ_2DA_ENTRY 2 1 colsn lvl1xp
+				READ_2DA_ENTRY 2 1 colsn lvl1xp
 				READ_2DA_ENTRY 2 2 colsn lvl2xp
 				READ_2DA_ENTRY 2 7 colsn lvl7xp
 				wild_mage_xp_remove = (0 - lvl1xp) + (0 - lvl2xp) + (0 - lvl7xp)
