@@ -22,7 +22,7 @@
  *
  */
 
-/* Time-stamp: </Users/nico/BG_modding/m7multikit/m7multikit/lib/multikit.tpp, 2024-01-24 Wednesday 17:47:20 nico> */
+/* Time-stamp: </Users/nico/BG_modding/m7multikit/m7multikit/lib/multikit.tpp, 2024-01-24 Wednesday 18:27:48 nico> */
 
 /******************************************************************************
  *      
@@ -767,6 +767,8 @@ END
 // Find last used designation.
 // Maybe rewrite for backward parsing?
 DEFINE_PATCH_FUNCTION ~m7#find_last_multikit_designation~
+        STR_VAR
+                kit_file_path = "" // if this isn't set, installation WILL fail
         RET
                 "numid"
 BEGIN
@@ -1567,9 +1569,16 @@ BEGIN
                 END ELSE BEGIN
                         SPRINT "kit2" ""
                 END
-                
+
+                INNER_ACTION BEGIN
+                        ACTION_IF !FILE_EXISTS "%kit_file_path%/multikits.tp2" BEGIN
+                                COPY "%modpath%/multikits.tp2" "%kit_file_path%"
+                        END                
+                END
                 // Find last used component designation.
                 LAUNCH_PATCH_FUNCTION ~m7#find_last_multikit_designation~
+                        STR_VAR
+                                kit_file_path = EVAL "%kit_file_path%"
                         RET
                                 "cid" = "numid" END
                 // Advance to next.
@@ -1577,9 +1586,6 @@ BEGIN
         END
         
         // What we want to append to the setup file.
-        ACTION_IF !FILE_EXISTS "%kit_file_path%/multikits.tp2" BEGIN
-            COPY "%modpath%/multikits.tp2" "%kit_file_path%"
-        END
         APPEND_OUTER ~%kit_file_path%/multikits.tp2~ ~~~~~BEGIN ~'%mixname%' multikit~ DESIGNATED %cid% REQUIRE_PREDICATE MOD_IS_INSTALLED ~m7multikit.tp2~ 10 @1300033
 %desthlafile%
         LAUNCH_ACTION_FUNCTION "m7#install_multikit"
@@ -2515,8 +2521,8 @@ STRING_LENGTH kitid == 0~
         OUTER_SPRINT "abdcscrq" $abrqrows(2)
 
         LAUNCH_ACTION_FUNCTION ~m7#int_to_hex_str~ INT_VAR "number" = "%unusability%" RET "unusstr" = "hexstr" END
-        PRINT ~%mixname% %lowname%~
-        PRINT ~%descript%~
+//        PRINT ~%mixname% %lowname%~
+//        PRINT ~%descript%~
         ADD_KIT ~%kitid%~
                 // appended to CLASWEAP.2da; does it even matter in BG2????
                 ~%kitid% 1 1 1 1 1 1 1 1~
