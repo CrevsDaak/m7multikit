@@ -22,7 +22,7 @@
  *
  */
 
-/* Time-stamp: </Users/nico/BG_modding/m7multikit/m7multikit/lib/multikit.tpp, 2024-01-24 Wednesday 18:27:48 nico> */
+/* Time-stamp: </Users/nico/BG_modding/m7multikit/m7multikit/lib/multikit.tpp, 2024-01-24 Wednesday 19:16:50 nico> */
 
 /******************************************************************************
  *      
@@ -1881,13 +1881,14 @@ STRING_LENGTH kitid == 0~
                         COUNT_2DA_COLS "cols"
                         COUNT_2DA_ROWS "%cols%" "rows"
                         FOR ("%index%" = 0; "%index%" < "%rows%"; "%index%" += 1) BEGIN
+                                READ_2DA_ENTRY "%index%" 0 "%cols%" name
                                 // The default multiclass HLA table.
                                 PATCH_IF ("%name%" STRING_EQUAL_CASE "%kitclass%") BEGIN
                                         READ_2DA_ENTRY "%index%" 1 "%cols%" kitclassluabbr
                                 END
                         END
                 END
-                PATCH_IF ((STRING_LENGTH "hlafile") > 0) BEGIN
+                PATCH_IF ((STRING_LENGTH "%hlafile%") > 0) && "%hlafile%" STR_CMP "" BEGIN
                         // We have a custom HLA table specified; use it instead.
                         PATCH_IF (!FILE_EXISTS "%hlafile%") BEGIN // reverted in v0.27.11 from previous version
                                 // We have a full path file for the luXXXXXX.2da file.
