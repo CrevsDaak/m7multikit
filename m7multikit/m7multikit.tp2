@@ -54,6 +54,7 @@ NO_IF_EVAL_BUG
 ASK_EVERY_COMPONENT
 
 LANGUAGE "English" "english" ~m7multikit/languages/english.tra~
+LANGUAGE "Simplified Chinese" "schinese" ~m7multikit/languages/schinese.tra~
 
 // Ancient components:
 BEGIN @1300000 DESIGNATED 0
